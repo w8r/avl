@@ -1,0 +1,33 @@
+{
+  "extends": "airbnb-base",
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "rules": {
+    "import/prefer-default-export": 0,
+    "arrow-parens": 0,
+    "padded-blocks": 0,
+    "no-spaced-func": 0,
+    "func-call-spacing": 0,
+    "space-before-function-paren": 0,
+    "no-plusplus": 0,
+    "no-mixed-operators": 0,
+    "no-param-reassign": 0,
+    "no-unused-vars": 1,
+    "prefer-const": 0,
+    "comma-dangle": 0,
+    "spaced-comment": 0,
+    "no-multi-spaces": 0,
+    "no-restricted-properties": 0,
+    "no-nested-ternary": 0,
+    "no-shadow": 0,
+    "one-var-declaration-per-line": 1,
+    "one-var": 1,
+    "operator-assignment": 0,
+    "no-underscore-dangle": 0,
+    "no-use-before-define": 0,
+    "no-var": 0,
+    "vars-on-top": 0
+  }
+}

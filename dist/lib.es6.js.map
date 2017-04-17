@@ -1,0 +1,1 @@
+{"version":3,"file":"lib.es6.js","sources":["../src/index.js"],"sourcesContent":["export default function () { return 1; }\n"],"names":[],"mappings":"AAAA,YAAe,YAAY,EAAE,OAAO,CAAC,CAAC,EAAE,CAAA;;"}

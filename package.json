@@ -1,0 +1,33 @@
+{
+  "name": "avl",
+  "version": "1.0.1",
+  "author": "Alexander Milevski <info@w8r.name>",
+  "license": "MIT",
+  "description": "AVL tree",
+  "main": "dist/avl.js",
+  "jsnext:main": "dist/avl.es6.js",
+  "scripts": {
+    "prebuild": "npm run lint",
+    "lint": "eslint src",
+    "build": "rollup -c build/rollup.config.umd.js && rollup -c build/rollup.config.es6.js",
+    "pretest": "rollup -c build/rollup.config.tests.js",
+    "start": "npm run test:watch",
+    "test:watch": "nodemon --watch src --watch tests --exec 'npm test'",
+    "test": "mocha build/tests-bundle.js",
+    "prepublish": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "eslint": "^3.18.0",
+    "eslint-config-airbnb-base": "^11.1.1",
+    "eslint-plugin-import": "^2.2.0",
+    "mocha": "^3.2.0",
+    "nodemon": "^1.11.0",
+    "rollup": "^0.41.6",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-multi-entry": "^2.0.1",
+    "rollup-watch": "^3.2.2",
+    "source-map-support": "^0.4.13"
+  },
+  "dependencies": {}
+}
