@@ -217,6 +217,49 @@ export default class AVL {
   }
 
 
+  prev (node) {
+    if (node.left !== null) return maxNode(node.left);
+    else {
+      var p = node.parent, T = node;
+      while (p !== null && T === p.left) {
+        T = p;
+        p = T.parent;
+      }
+      return p;
+    }
+  }
+
+
+  next (node) {
+    if (node.right !== null) return maxNode(node.right)
+    else {
+      var p = node.parent, T = node;
+      while (p !== null && T === p.right) {
+        T = p;
+        p = T.parent;
+      }
+      return p;
+    }
+  }
+
+
+  traverse (fn) {
+    var node = this.root;
+    while (node.left) node = node.left;
+    while (node) {
+      fn(node);
+      if (node.right) {
+        node = node.right;
+        while (node.left) node = node.left;
+      } else {
+        while (node.parent && node === node.parent.right) node = node.parent;
+        node = node.parent;
+      }
+    }
+    return this;
+  }
+
+
   pop () {
     var min = this.min();
     this._remove(this._root, min);

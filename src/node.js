@@ -1,7 +1,7 @@
 const { max } = Math;
 
 export function node (key, value) {
-  return { left: null, right: null, height: null, key, value };
+  return { left: null, right: null, parent: null, height: null, key, value };
 }
 
 
