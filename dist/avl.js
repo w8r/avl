@@ -278,6 +278,35 @@ AVL.prototype.pop = function pop () {
   return min;
 };
 
+
+AVL.prototype.forEach = function forEach (fn) {
+  var current = this._root;
+  var s = [], done = false;
+
+  while (!done) {
+    // Reach the left most Node of the current Node
+    if (current) {
+      // Place pointer to a tree node on the stack
+      // before traversing the node's left subtree
+      s.push(current);
+      current = current.left;
+    } else {
+      // BackTrack from the empty subtree and visit the Node
+      // at the top of the stack; however, if the stack is
+      // empty you are done
+      if (s.length > 0) {
+        current = s.pop();
+        fn(current);
+
+        // We have visited the node and its left
+        // subtree. Now, it's right subtree's turn
+        current = current.right;
+      } else { done = true; }
+    }
+  }
+  return this;
+};
+
 Object.defineProperties( AVL.prototype, prototypeAccessors );
 
 /**
