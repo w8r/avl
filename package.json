@@ -17,17 +17,17 @@
     "prepublish": "npm run build && npm test"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "eslint": "^3.18.0",
-    "eslint-config-airbnb-base": "^11.1.1",
-    "eslint-plugin-import": "^2.2.0",
-    "mocha": "^3.2.0",
+    "chai": "^4.0.2",
+    "eslint": "^4.1.1",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.6.1",
+    "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
-    "rollup": "^0.41.6",
+    "rollup": "^0.43.0",
     "rollup-plugin-buble": "^0.15.0",
     "rollup-plugin-multi-entry": "^2.0.1",
-    "rollup-watch": "^3.2.2",
-    "source-map-support": "^0.4.13"
+    "rollup-watch": "^4.0.0",
+    "source-map-support": "^0.4.15"
   },
   "dependencies": {}
 }
