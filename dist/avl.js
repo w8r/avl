@@ -271,6 +271,47 @@ AVL.prototype.max = function max () {
   return maxNode(this._root).key;
 };
 
+AVL.prototype.minNode = function minNode$1 () { return minNode(this._root); };
+AVL.prototype.maxNode = function maxNode$1 () { return maxNode(this._root); };
+
+
+AVL.prototype.prev = function prev (node$$1) {
+    var this$1 = this;
+
+  if (node$$1.left !== null) { return maxNode(node$$1.left); }
+
+  var predeccessor = null;
+  var root = this._root;
+  while (root) {
+    var cmp = this$1._compare(node$$1.key, root.key);
+    if (cmp > 0) {
+      predeccessor = root;
+      root = root.right;
+    } else if (cmp < 0) { root = root.left; }
+    else              { break; }
+  }
+  return predeccessor;
+};
+
+
+AVL.prototype.next = function next (node$$1) {
+    var this$1 = this;
+
+  if (node$$1.right !== null) { return minNode(node$$1.right); }
+
+  var successor = null;
+  var root = this._root;
+  while (root) {
+    var cmp = this$1._compare(node$$1.key, root.key);
+    if (cmp < 0) {
+      successor = root;
+      root = root.left;
+    } else if (cmp > 0) { root = root.right; }
+    else              { break; }
+  }
+  return successor;
+};
+
 
 AVL.prototype.pop = function pop () {
   var min = this.min();
@@ -279,32 +320,50 @@ AVL.prototype.pop = function pop () {
 };
 
 
-AVL.prototype.forEach = function forEach (fn) {
+/**
+ * Non-recursive traversal
+ * @param{Function} fn
+ * @param{*=}     ctx
+ * @return {AVL}
+ */
+AVL.prototype.forEach = function forEach (fn, ctx) {
+  /* eslint-disable no-constant-condition */
   var current = this._root;
-  var s = [], done = false;
+  var stack = [];
+  var count = 0;
 
-  while (!done) {
+  while (true) {
     // Reach the left most Node of the current Node
     if (current) {
       // Place pointer to a tree node on the stack
       // before traversing the node's left subtree
-      s.push(current);
+      stack.push(current);
       current = current.left;
     } else {
       // BackTrack from the empty subtree and visit the Node
       // at the top of the stack; however, if the stack is
       // empty you are done
-      if (s.length > 0) {
-        current = s.pop();
-        fn(current);
+      if (stack.length === 0) { break; }
+      else {
+        current = stack.pop();
+        fn.call(ctx, current, count++);
 
         // We have visited the node and its left
         // subtree. Now, it's right subtree's turn
         current = current.right;
-      } else { done = true; }
+      }
     }
   }
+  /* eslint-enable no-constant-condition */
   return this;
+};
+
+AVL.prototype.map = function map (fn, ctx) {
+  var stack = new Array(this._size);
+  this.forEach(function (node$$1, i) {
+    stack[i] = fn.call(ctx, node$$1, i);
+  });
+  return stack;
 };
 
 Object.defineProperties( AVL.prototype, prototypeAccessors );

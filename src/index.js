@@ -216,47 +216,41 @@ export default class AVL {
     return maxNode(this._root).key;
   }
 
+  minNode () { return minNode(this._root); }
+  maxNode () { return maxNode(this._root); }
+
 
   prev (node) {
     if (node.left !== null) return maxNode(node.left);
-    else {
-      var p = node.parent, T = node;
-      while (p !== null && T === p.left) {
-        T = p;
-        p = T.parent;
-      }
-      return p;
+
+    var predeccessor = null;
+    var root = this._root;
+    while (root) {
+      var cmp = this._compare(node.key, root.key);
+      if (cmp > 0) {
+        predeccessor = root;
+        root = root.right;
+      } else if (cmp < 0) root = root.left;
+      else                break;
     }
+    return predeccessor;
   }
 
 
   next (node) {
-    if (node.right !== null) return maxNode(node.right)
-    else {
-      var p = node.parent, T = node;
-      while (p !== null && T === p.right) {
-        T = p;
-        p = T.parent;
-      }
-      return p;
-    }
-  }
+    if (node.right !== null) return minNode(node.right);
 
-
-  traverse (fn) {
-    var node = this.root;
-    while (node.left) node = node.left;
-    while (node) {
-      fn(node);
-      if (node.right) {
-        node = node.right;
-        while (node.left) node = node.left;
-      } else {
-        while (node.parent && node === node.parent.right) node = node.parent;
-        node = node.parent;
-      }
+    var successor = null;
+    var root = this._root;
+    while (root) {
+      var cmp = this._compare(node.key, root.key);
+      if (cmp < 0) {
+        successor = root;
+        root = root.left;
+      } else if (cmp > 0) root = root.right;
+      else                break;
     }
-    return this;
+    return successor;
   }
 
 
@@ -267,9 +261,16 @@ export default class AVL {
   }
 
 
+  /**
+   * Non-recursive traversal
+   * @param  {Function} fn
+   * @param  {*=}       ctx
+   * @return {AVL}
+   */
   forEach(fn, ctx) {
+    /* eslint-disable no-constant-condition */
     var current = this._root;
-    var stack = [], done = false;
+    var stack = [];
     var count = 0;
 
     while (true) {
@@ -294,7 +295,16 @@ export default class AVL {
         }
       }
     }
+    /* eslint-enable no-constant-condition */
     return this;
+  }
+
+  map (fn, ctx) {
+    var stack = new Array(this._size);
+    this.forEach((node, i) => {
+      stack[i] = fn.call(ctx, node, i);
+    });
+    return stack;
   }
 
 }
