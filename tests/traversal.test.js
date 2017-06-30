@@ -11,7 +11,34 @@ describe ('traversal check', () => {
     tree.insert(1);
     tree.insert(2);
 
-    tree.forEach((n) => console.log(n.key));
+    var st = 1;
+    tree.forEach((n) => {
+      assert.equal(n.key, st++);
+    });
+  });
+
+  it ('should pass the index', () => {
+    var tree = new Tree();
+    tree.insert(3);
+    tree.insert(1);
+    tree.insert(2);
+
+    var st = 0;
+    tree.forEach((n, i) => {
+      assert.equal(i, st++);
+    });
+  });
+
+  it ('should use the provided context', () => {
+    var tree = new Tree();
+    tree.insert(3);
+    tree.insert(1);
+    tree.insert(2);
+
+    var obj = {};
+    tree.forEach(function (n, i) {
+      assert.equal(this, obj);
+    }, obj);
   });
 
 });
