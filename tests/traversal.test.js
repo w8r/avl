@@ -9,9 +9,10 @@ describe ('traversal check', () => {
     var tree = new Tree();
     tree.insert(3);
     tree.insert(1);
+    tree.insert(0);
     tree.insert(2);
 
-    tree.forEach((n) => console.log(n.key));
+    tree.forEach((n, i) => assert.equal(n.key, i));
   });
 
 });

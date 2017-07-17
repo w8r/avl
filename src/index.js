@@ -16,7 +16,10 @@ const DEFAULT_COMPARE = (a, b) => (a > b ? 1 : a < b ? -1 : 0);
  * @param  {node} node
  * @return {number}
  */
-const balanceFactor = (node) => leftHeight(node) - rightHeight(node);
+function balanceFactor(node) {
+  return (node.right ? node.right.height : -1) -
+         (node.left  ? node.left.height  : -1);
+}
 
 
 export default class AVL {
@@ -40,23 +43,99 @@ export default class AVL {
   }
 
 
-  _insert (root, key, value) {
-    if (root === null) return node(key, value);
+  // _insert (root, key, value) {
+  //   if (root === null) return { key, value, left: null, right: null, height: null };
 
-    var cmp = this._compare(key, root.key);
-    if (cmp < 0) {
-      root.left  = this._insert(root.left, key, value);
-    } else if (cmp > 0) { //allow repeating keys?
-      root.right = this._insert(root.right, key, value);
-    } else {
-      // It's a duplicate so insertion failed, decrement size to make up for it
-      this._size--;
-      return root;
+  //   var cmp = this._compare(key, root.key);
+  //   if (cmp < 0) {
+  //     root.left  = this._insert(root.left, key, value);
+  //   } else if (cmp > 0) { //allow repeating keys?
+  //     root.right = this._insert(root.right, key, value);
+  //   } else {
+  //     // It's a duplicate so insertion failed, decrement size to make up for it
+  //     this._size--;
+  //     return root;
+  //   }
+
+  //   // Update height and rebalance tree
+  //   var lh  = root.right ? root.right.height : -1;
+  //   var rh  = root.left  ? root.left.height  : -1;
+  //   root.height = Math.max(lh, rh) + 1;
+  //   //var balance = balanceFactor(root);
+  //   var balance = lh - rh;
+
+  //   if (balance === UNBALANCED_LEFT) {
+  //     if (this._compare(key, root.left.key) < 0) { // left left
+  //       root = rotateRight(root);
+  //     } else { // Left right case
+  //       root.left = rotateLeft(root.left);
+  //       return rotateRight(root);
+  //     }
+  //   } else
+
+  //   if (balance === UNBALANCED_RIGHT) {
+  //     if (this._compare(key, root.right.key) > 0) { // right right
+  //       root = rotateLeft(root);
+  //     } else { // Right left case
+  //       root.right = rotateRight(root.right);
+  //       return rotateLeft(root);
+  //     }
+  //   }
+
+  //   return root;
+  // }
+
+
+  _insert (root, key, value) {
+    var newNode = { key, value, left: null, right: null, height: null };
+    if (root === null) return newNode;
+
+    var compare = this._compare;
+    var cmp, parent, result;
+    var subtree = root;
+    var toBalance = [];
+
+    while (subtree) {
+      //parent = subtree;
+      toBalance.push(subtree);
+      cmp    = compare(key, subtree.key);
+
+      if (cmp < 0) {
+        if (subtree.left === null)  {
+          subtree.left = newNode;
+          subtree      = newNode;
+        }
+        subtree = subtree.left; // null will stop the loop
+      } else if (cmp > 0) {
+        if (subtree.right === null) {
+          subtree.right = newNode;
+          subtree       = newNode;
+        }
+        subtree = subtree.right; // null will stop the loop
+      } else {
+        this._size--;
+        subtree = null;
+      }
     }
 
+
+    while (toBalance.length !== 0) {
+      subtree = toBalance.pop();
+      result = this._balance(subtree, key);
+      if (subtree === root) root = result;
+    }
+
+    return root;
+  }
+
+
+  _balance(root, key) {
     // Update height and rebalance tree
-    root.height = Math.max(leftHeight(root), rightHeight(root)) + 1;
-    var balance = balanceFactor(root);
+    var lh  = root.right ? root.right.height : -1;
+    var rh  = root.left  ? root.left.height  : -1;
+    root.height = Math.max(lh, rh) + 1;
+    //var balance = balanceFactor(root);
+    var balance = lh - rh;
 
     if (balance === UNBALANCED_LEFT) {
       if (this._compare(key, root.left.key) < 0) { // left left
@@ -65,7 +144,7 @@ export default class AVL {
         root.left = rotateLeft(root.left);
         return rotateRight(root);
       }
-    }
+    } else
 
     if (balance === UNBALANCED_RIGHT) {
       if (this._compare(key, root.right.key) > 0) { // right right
@@ -172,6 +251,7 @@ export default class AVL {
 
 
   /**
+   * Non-recursive search
    * @param  {node} root
    * @param  {*}    key
    * @return {node}
@@ -180,15 +260,15 @@ export default class AVL {
     if (this._root === null) return null;
     if (key === root.key)    return root;
 
-
-    if (this._compare(key, root.key) < 0) {
-      if (!root.left) return null;
-      return this._findNode(root.left, key);
+    var subtree = root, cmp;
+    while (subtree) {
+      cmp = this._compare(key, subtree.key);
+      if      (cmp === 0) return subtree;
+      else if (cmp < 0)   subtree = subtree.left;
+      else                subtree = subtree.right;
     }
 
-    if (!root.right) return null;
-
-    return this._findNode(root.right, key);
+    return subtree;
   }
 
 
@@ -226,7 +306,7 @@ export default class AVL {
 
   forEach(fn) {
     var current = this._root;
-    var s = [], done = false;
+    var s = [], done = false, i = 0;
 
     while (!done) {
       // Reach the left most Node of the current Node
@@ -241,7 +321,7 @@ export default class AVL {
         // empty you are done
         if (s.length > 0) {
           current = s.pop();
-          fn(current);
+          fn(current, i++);
 
           // We have visited the node and its left
           // subtree. Now, it's right subtree's turn
