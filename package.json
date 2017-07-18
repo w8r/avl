@@ -20,17 +20,17 @@
   },
   "devDependencies": {
     "bintrees": "^1.0.1",
-    "chai": "^4.0.2",
-    "eslint": "^4.1.1",
+    "chai": "^4.1.0",
+    "eslint": "^4.2.0",
     "eslint-config-airbnb-base": "^11.2.0",
-    "eslint-plugin-import": "^2.6.1",
+    "eslint-plugin-import": "^2.7.0",
     "functional-red-black-tree": "^1.0.1",
     "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
-    "rollup": "^0.43.0",
+    "rollup": "^0.45.2",
     "rollup-plugin-buble": "^0.15.0",
     "rollup-plugin-multi-entry": "^2.0.1",
-    "rollup-watch": "^4.0.0",
+    "rollup-watch": "^4.3.1",
     "source-map-support": "^0.4.15"
   },
   "dependencies": {}
