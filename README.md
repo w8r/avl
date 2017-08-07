@@ -13,6 +13,11 @@ import AVLTree from 'avl';
 const tree = new AVLTree();
 ```
 
+Or get it from CDN
+```
+<script src=""></script>
+```
+
 ## API
 
 * `new AVLTree([compare])`, where `compare` is optional comparison function
@@ -37,7 +42,27 @@ const tree = new AVLTree();
 npm run benchmark
 ```
 
-### Develop
+```
+Insert (x1000)
+Bintrees x 3,695 ops/sec ±1.71% (87 runs sampled)
+Functional red black tree x 2,233 ops/sec ±1.12% (87 runs sampled)
+AVL (current) x 7,340 ops/sec ±1.35% (87 runs sampled)
+- Fastest is AVL (current)
+
+Random read (x1000)
+Bintrees x 7,454 ops/sec ±1.21% (83 runs sampled)
+Functional red black tree x 13,360 ops/sec ±0.80% (89 runs sampled)
+AVL (current) x 12,662 ops/sec ±0.75% (87 runs sampled)
+- Fastest is Functional red black tree
+
+Remove (x1000)
+Bintrees x 21,853 ops/sec ±1.42% (87 runs sampled)
+Functional red black tree x 14,884 ops/sec ±1.58% (87 runs sampled)
+AVL (current) x 107,429 ops/sec ±0.79% (86 runs sampled)
+- Fastest is AVL (current)
+```
+
+## Develop
 
 ```shell
 npm i

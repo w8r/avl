@@ -24,7 +24,7 @@ const options = {
   }
 };
 
-new Benchmark.Suite('Insert', options)
+new Benchmark.Suite(`Insert (x${N})`, options)
   .add('Bintrees', () => {
     let rb = new RBTree((a, b) => a - b);
     for (let i = 0; i < N; i++) rb.insert(rvalues[i]);
@@ -33,34 +33,34 @@ new Benchmark.Suite('Insert', options)
     let frb = new FRB();
     for (let i = 0; i < N; i++) frb = frb.insert(rvalues[i]);
   })
-  .add('AVL', () => {
+  .add('AVL (current)', () => {
     const tree = new Tree();
     for (let i = 0; i < N; i++) tree.insert(rvalues[i]);
   })
   .run();
 
 
-new Benchmark.Suite('Random read', options)
+new Benchmark.Suite(`Random read (x${N})`, options)
   .add('Bintrees', () => {
     for (let i = N - 1; i; i--) prefilledRB.find(rvalues[i]);
   })
   .add('Functional red black tree', () => {
     for (let i = N - 1; i; i--) prefilledFRB.get(rvalues[i]);
   })
-  .add('AVL', () => {
+  .add('AVL (current)', () => {
     for (let i = N - 1; i; i--) prefilledAVL.find(rvalues[i]);
   })
   .run();
 
 
-new Benchmark.Suite('Remove', options)
+new Benchmark.Suite(`Remove (x${N})`, options)
   .add('Bintrees', () => {
     for (let i = N - 1; i; i--) prefilledRB.remove(rvalues[i]);
   })
   .add('Functional red black tree', () => {
     for (let i = N - 1; i; i--) prefilledFRB = prefilledFRB.remove(rvalues[i]);
   })
-  .add('AVL', () => {
+  .add('AVL (current)', () => {
     for (let i = N - 1; i; i--) prefilledAVL.remove(values[i]);
   })
   .run();
