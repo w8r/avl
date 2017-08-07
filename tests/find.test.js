@@ -13,8 +13,9 @@ describe('find', () => {
     tree.insert(1, 4);
     tree.insert(2, 5);
     tree.insert(3, 6);
-    assert.equal(tree.find(1), 4);
-    assert.equal(tree.find(2), 5);
-    assert.equal(tree.find(3), 6);
+    assert.equal(tree.find(1).data, 4);
+    assert.equal(tree.find(2).data, 5);
+    assert.equal(tree.find(3).data, 6);
+    assert.isNull(tree.find(8));
   });
 })

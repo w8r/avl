@@ -33,7 +33,7 @@ describe ('find min and max', () => {
     tree.insert(1);
     tree.insert(4);
     tree.insert(2);
-    assert.equal(tree.pop(), 1);
+    assert.equal(tree.pop().key, 1);
   });
 
 });

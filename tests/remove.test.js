@@ -4,7 +4,7 @@ import { assert }       from 'chai';
 import Tree from '../src/index';
 
 
-describe('remove', () => {
+describe ('remove', () => {
 
   it('should not change the size of a tree with no root', () => {
     var tree = new Tree();
@@ -16,7 +16,7 @@ describe('remove', () => {
     var tree = new Tree();
     tree.insert(1);
     tree.remove(1);
-    assert.isTrue(tree.isEmpty);
+    assert.isTrue(tree.isEmpty());
   });
 
   /**
@@ -149,7 +149,7 @@ describe('remove', () => {
     tree.insert(1);
     tree.insert(3);
     tree.remove(2);
-    assert.equal(tree._root.key, 3);
+    assert.equal(tree._root.key, 1);
   });
 
   it('should get the in-order successor if the node has both children', () => {
@@ -160,6 +160,7 @@ describe('remove', () => {
     tree.insert(3);
     tree.insert(5);
     tree.remove(2);
-    assert.equal(tree._root.key, 3);
+    assert.equal(tree._root.key, 4);
   });
+
 });

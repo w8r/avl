@@ -1,307 +1,135 @@
-import {
-  node,
-  rotateLeft, rotateRight,
-  leftHeight, rightHeight
-} from './node';
+import { print, isBalanced } from './utils';
 
 
-const UNBALANCED_LEFT           = -2;
-const SLIGHTLY_UNBALANCED_LEFT  = -1;
-const UNBALANCED_RIGHT          =  2;
-const SLIGHTLY_UNBALANCED_RIGHT =  1;
+// function createNode (parent, left, right, height, key, data) {
+//   return { parent, left, right, balanceFactor: height, key, data };
+// }
 
-const DEFAULT_COMPARE = (a, b) => (a > b ? 1 : a < b ? -1 : 0);
 
-/**
- * @param  {node} node
- * @return {number}
- */
-function balanceFactor(node) {
-  return (node.right ? node.right.height : -1) -
-         (node.left  ? node.left.height  : -1);
+function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
+
+
+function rotateLeft (node) {
+  var rightNode = node.right;
+  node.right    = rightNode.left;
+
+  if (rightNode.left) rightNode.left.parent = node;
+
+  rightNode.parent = node.parent;
+  if (rightNode.parent) {
+    if (rightNode.parent.left === node) {
+      rightNode.parent.left = rightNode;
+    } else {
+      rightNode.parent.right = rightNode;
+    }
+  }
+
+  node.parent    = rightNode;
+  rightNode.left = node;
+
+  node.balanceFactor += 1;
+  if (rightNode.balanceFactor < 0) {
+    node.balanceFactor -= rightNode.balanceFactor;
+  }
+
+  rightNode.balanceFactor += 1;
+  if (node.balanceFactor > 0) {
+    rightNode.balanceFactor += node.balanceFactor;
+  }
+  return rightNode;
 }
 
 
-export default class AVL {
+function rotateRight (node) {
+  var leftNode = node.left;
+  node.left = leftNode.right;
+  if (node.left) node.left.parent = node;
 
-  constructor (comparator = DEFAULT_COMPARE) {
+  leftNode.parent = node.parent;
+  if (leftNode.parent) {
+    if (leftNode.parent.left === node) {
+      leftNode.parent.left = leftNode;
+    } else {
+      leftNode.parent.right = leftNode;
+    }
+  }
+
+  node.parent    = leftNode;
+  leftNode.right = node;
+
+  node.balanceFactor -= 1;
+  if (leftNode.balanceFactor > 0) {
+    node.balanceFactor -= leftNode.balanceFactor;
+  }
+
+  leftNode.balanceFactor -= 1;
+  if (node.balanceFactor < 0) {
+    leftNode.balanceFactor += node.balanceFactor;
+  }
+
+  return leftNode;
+}
+
+
+// function leftBalance (node) {
+//   if (node.left.balanceFactor === -1) rotateLeft(node.left);
+//   return rotateRight(node);
+// }
+
+
+// function rightBalance (node) {
+//   if (node.right.balanceFactor === 1) rotateRight(node.right);
+//   return rotateLeft(node);
+// }
+
+
+export default class Tree {
+
+  constructor (comparator) {
+    this._comparator = comparator || DEFAULT_COMPARE;
     this._root = null;
     this._size = 0;
-    this._compare = comparator;
-  }
-
-  get size ()    { return this._size; }
-  get isEmpty () { return this._size === 0; }
-
-  /**
-   * @param {*} key
-   * @param {*} value
-   */
-  insert (key, value) {
-    this._root = this._insert(this._root, key, value);
-    this._size++;
   }
 
 
-  // _insert (root, key, value) {
-  //   if (root === null) return { key, value, left: null, right: null, height: null };
+  destroy() {
+    this._root = null;
+  }
 
-  //   var cmp = this._compare(key, root.key);
-  //   if (cmp < 0) {
-  //     root.left  = this._insert(root.left, key, value);
-  //   } else if (cmp > 0) { //allow repeating keys?
-  //     root.right = this._insert(root.right, key, value);
-  //   } else {
-  //     // It's a duplicate so insertion failed, decrement size to make up for it
-  //     this._size--;
-  //     return root;
-  //   }
-
-  //   // Update height and rebalance tree
-  //   var lh  = root.right ? root.right.height : -1;
-  //   var rh  = root.left  ? root.left.height  : -1;
-  //   root.height = Math.max(lh, rh) + 1;
-  //   //var balance = balanceFactor(root);
-  //   var balance = lh - rh;
-
-  //   if (balance === UNBALANCED_LEFT) {
-  //     if (this._compare(key, root.left.key) < 0) { // left left
-  //       root = rotateRight(root);
-  //     } else { // Left right case
-  //       root.left = rotateLeft(root.left);
-  //       return rotateRight(root);
-  //     }
-  //   } else
-
-  //   if (balance === UNBALANCED_RIGHT) {
-  //     if (this._compare(key, root.right.key) > 0) { // right right
-  //       root = rotateLeft(root);
-  //     } else { // Right left case
-  //       root.right = rotateRight(root.right);
-  //       return rotateLeft(root);
-  //     }
-  //   }
-
-  //   return root;
-  // }
-
-
-  _insert (root, key, value) {
-    var newNode = { key, value, left: null, right: null, height: null };
-    if (root === null) return newNode;
-
-    var compare = this._compare;
-    var cmp, parent, result;
-    var subtree = root;
-    var toBalance = [];
-
-    while (subtree) {
-      //parent = subtree;
-      toBalance.push(subtree);
-      cmp    = compare(key, subtree.key);
-
-      if (cmp < 0) {
-        if (subtree.left === null)  {
-          subtree.left = newNode;
-          subtree      = newNode;
-        }
-        subtree = subtree.left; // null will stop the loop
-      } else if (cmp > 0) {
-        if (subtree.right === null) {
-          subtree.right = newNode;
-          subtree       = newNode;
-        }
-        subtree = subtree.right; // null will stop the loop
-      } else {
-        this._size--;
-        subtree = null;
-      }
-    }
-
-
-    while (toBalance.length !== 0) {
-      subtree = toBalance.pop();
-      result = this._balance(subtree, key);
-      if (subtree === root) root = result;
-    }
-
-    return root;
+  get size () {
+    return this._size;
   }
 
 
-  _balance(root, key) {
-    // Update height and rebalance tree
-    var lh  = root.right ? root.right.height : -1;
-    var rh  = root.left  ? root.left.height  : -1;
-    root.height = Math.max(lh, rh) + 1;
-    //var balance = balanceFactor(root);
-    var balance = lh - rh;
-
-    if (balance === UNBALANCED_LEFT) {
-      if (this._compare(key, root.left.key) < 0) { // left left
-        root = rotateRight(root);
-      } else { // Left right case
-        root.left = rotateLeft(root.left);
-        return rotateRight(root);
-      }
-    } else
-
-    if (balance === UNBALANCED_RIGHT) {
-      if (this._compare(key, root.right.key) > 0) { // right right
-        root = rotateLeft(root);
-      } else { // Right left case
-        root.right = rotateRight(root.right);
-        return rotateLeft(root);
-      }
-    }
-
-    return root;
-  }
-
-
-  remove (key) {
-    this._root = this._remove(this._root, key);
-    this._size--;
-  }
-
-
-  /**
-   * @param  {node} root
-   * @param  {*}    key
-   * @return {node}
-   */
-  _remove (root, key) {
-    if (root === null) {  // BST deletion
-      this._size++;
-      return root;
-    }
-
-    var cmp = this._compare(key, root.key);
-    if (cmp < 0) {
-      // The key to be deleted is in the left sub-tree
-      root.left = this._remove(root.left, key);
-    } else if (cmp > 0) {
-      // The key to be deleted is in the right sub-tree
-      root.right = this._remove(root.right, key);
-    } else if (cmp === 0) {
-      // root is the node to be deleted
-      if (!root.left && !root.right)      root = null;
-      else if (!root.left && root.right)  root = root.right;
-      else if (root.left  && !root.right) root = root.left;
-      else {
-        // Node has 2 children, get the in-order successor
-        var successor = minNode(root.right);
-        root.key   = successor.key;
-        root.right = this._remove(root.right, successor.key);
-      }
-    }
-
-    if (root === null) return root;
-
-    // Update height and rebalance tree
-    root.height = Math.max(leftHeight(root), rightHeight(root)) + 1;
-    var balance = balanceFactor(root);
-
-    if (balance === UNBALANCED_LEFT) {
-      var leftBalance = balanceFactor(root.left);
-      // Left left case
-      if (leftBalance === 0 ||
-          leftBalance === SLIGHTLY_UNBALANCED_LEFT) {
-        return rotateRight(root);
-      }
-
-      // Left right case
-      if (leftBalance === SLIGHTLY_UNBALANCED_RIGHT) {
-        root.left = rotateLeft(root.left);
-        return rotateRight(root);
-      }
-    }
-
-    if (balance === UNBALANCED_RIGHT) {
-      var rightBalance = balanceFactor(root.right);
-      // Right right case
-      if (rightBalance === 0 ||
-          rightBalance === SLIGHTLY_UNBALANCED_RIGHT) {
-        return rotateLeft(root);
-      }
-      // Right left case
-      if (rightBalance === SLIGHTLY_UNBALANCED_LEFT) {
-        root.right = rotateRight(root.right);
-        return rotateLeft(root);
-      }
-    }
-
-    return root;
-  }
-
-
-  /**
-   * @param {*} key
-   * @return {node}
-   */
-  findNode (key) {
-    return this._findNode(this._root, key);
-  }
-
-
-  find (key) {
-    var node = this._findNode(this._root, key);
-    return node ? node.value : null;
-  }
-
-
-  /**
-   * Non-recursive search
-   * @param  {node} root
-   * @param  {*}    key
-   * @return {node}
-   */
-  _findNode (root, key) {
-    if (this._root === null) return null;
-    if (key === root.key)    return root;
-
-    var subtree = root, cmp;
-    while (subtree) {
-      cmp = this._compare(key, subtree.key);
-      if      (cmp === 0) return subtree;
-      else if (cmp < 0)   subtree = subtree.left;
-      else                subtree = subtree.right;
-    }
-
-    return subtree;
-  }
-
-
-  /**
-   * @param  {*}
-   * @return {boolean}
-   */
   contains (key) {
-    return this._root === null ? false : (this._findNode(this._root, key) !== null);
+    if (this._root)  {
+      var node       = this._root;
+      var comparator = this._comparator;
+      while (node)  {
+        var cmp = comparator(key, node.key);
+        if      (cmp === 0)     return true;
+        else if (cmp === -1) node = node.left;
+        else                    node = node.right;
+      }
+    }
+    return false;
   }
 
 
-  /**
-   * @return {*}
-   */
-  min () {
-    return minNode(this._root).key;
+  /* eslint-disable class-methods-use-this */
+  next (node) {
+    var sucessor = node.right;
+    while (sucessor && sucessor.left) sucessor = sucessor.left;
+    return sucessor;
   }
 
 
-  /**
-   * @return {*}
-   */
-  max () {
-    return maxNode(this._root).key;
+  prev (node) {
+    var predecessor = node.left;
+    while (predecessor && predecessor.right) predecessor = predecessor.right;
+    return predecessor;
   }
-
-
-  pop () {
-    var min = this.min();
-    this._remove(this._root, min);
-    return min;
-  }
+  /* eslint-enable class-methods-use-this */
 
 
   forEach(fn) {
@@ -332,26 +160,267 @@ export default class AVL {
     return this;
   }
 
+
+  keys () {
+    var current = this._root;
+    var s = [], r = [], done = false;
+
+    while (!done) {
+      if (current) {
+        s.push(current);
+        current = current.left;
+      } else {
+        if (s.length > 0) {
+          current = s.pop();
+          r.push(current.key);
+          current = current.right;
+        } else done = true;
+      }
+    }
+    return r;
+  }
+
+
+  values () {
+    var current = this._root;
+    var s = [], r = [], done = false;
+
+    while (!done) {
+      if (current) {
+        s.push(current);
+        current = current.left;
+      } else {
+        if (s.length > 0) {
+          current = s.pop();
+          r.push(current.data);
+          current = current.right;
+        } else done = true;
+      }
+    }
+    return r;
+  }
+
+
+  minNode () {
+    var node = this._root;
+    while (node && node.left) node = node.left;
+    return node;
+  }
+
+
+  maxNode () {
+    var node = this._root;
+    while (node && node.right) node = node.right;
+    return node;
+  }
+
+
+  min () {
+    return this.minNode().key;
+  }
+
+
+  max() {
+    return this.maxNode().key;
+  }
+
+
+  isEmpty() {
+    return !this._root;
+  }
+
+
+  pop () {
+    var node = this._root;
+    while (node.left) node = node.left;
+    var returnValue = { key: node.key, data: node.data };
+    this.remove(node.key);
+    return returnValue;
+  }
+
+
+  find (key) {
+    var root = this._root;
+    if (root === null)    return null;
+    if (key === root.key) return root;
+
+    var subtree = root, cmp;
+    var compare = this._comparator;
+    while (subtree) {
+      cmp = compare(key, subtree.key);
+      if      (cmp === 0) return subtree;
+      else if (cmp < 0)   subtree = subtree.left;
+      else                subtree = subtree.right;
+    }
+
+    return null;
+  }
+
+
+  insert (key, data) {
+    // if (this.contains(key)) return null;
+
+    if (!this._root) {
+      this._root = {
+        parent: null, left: null, right: null, balanceFactor: 0,
+        key, data
+      };
+      this._size++;
+      return this._root;
+    }
+
+    var compare = this._comparator;
+    var node    = this._root;
+    var parent  = null;
+    var cmp     = 0;
+
+    while (node) {
+      cmp = compare(key, node.key);
+      parent = node;
+      if      (cmp === 0) return null;
+      else if (cmp < 0)   node = node.left;
+      else                node = node.right;
+    }
+
+    var newNode = {
+      left: null, right: null, balanceFactor: 0,
+      parent, key, data,
+    };
+    if (cmp < 0) parent.left  = newNode;
+    else         parent.right = newNode;
+
+    while (parent) {
+      if (compare(parent.key, key) < 0) parent.balanceFactor -= 1;
+      else                              parent.balanceFactor += 1;
+
+      if        (parent.balanceFactor === 0) break;
+      else if   (parent.balanceFactor < -1) {
+        //let newRoot = rightBalance(parent);
+        if (parent.right.balanceFactor === 1) rotateRight(parent.right);
+        let newRoot = rotateLeft(parent);
+
+        if (parent === this._root) this._root = newRoot;
+        break;
+      } else if (parent.balanceFactor > 1) {
+        // let newRoot = leftBalance(parent);
+        if (parent.left.balanceFactor === -1) rotateLeft(parent.left);
+        let newRoot = rotateRight(parent);
+
+        if (parent === this._root) this._root = newRoot;
+        break;
+      }
+      parent = parent.parent;
+    }
+
+    this._size++;
+    return newNode;
+  }
+
+
+  remove (key) {
+    if (!this._root) return null;
+
+    // if (!this.contains(key)) return null;
+
+    var node = this._root;
+    var compare = this._comparator;
+
+    while (node) {
+      var cmp = compare(key, node.key);
+      if      (cmp === 0) break;
+      else if (cmp < 0)   node = node.left;
+      else                node = node.right;
+    }
+    if (!node) return null;
+    var returnValue = node.key;
+
+    if (node.left) {
+      var max = node.left;
+
+      while (max.left || max.right) {
+        while (max.right) max = max.right;
+
+        node.key = max.key;
+        node.data = max.data;
+        if (max.left) {
+          node = max;
+          max = max.left;
+        }
+      }
+
+      node.key  = max.key;
+      node.data = max.data;
+      node = max;
+    }
+
+    if (node.right) {
+      var min = node.right;
+
+      while (min.left || min.right) {
+        while (min.left) min = min.left;
+
+        node.key  = min.key;
+        node.data = min.data;
+        if (min.right) {
+          node = min;
+          min = min.right;
+        }
+      }
+
+      node.key  = min.key;
+      node.data = min.data;
+      node = min;
+    }
+
+    var parent = node.parent;
+    var pp     = node;
+
+    while (parent) {
+      if (parent.left === pp) parent.balanceFactor -= 1;
+      else                    parent.balanceFactor += 1;
+
+      if        (parent.balanceFactor < -1) {
+        //let newRoot = rightBalance(parent);
+        if (parent.right.balanceFactor === 1) rotateRight(parent.right);
+        let newRoot = rotateLeft(parent);
+
+        if (parent === this._root) this._root = newRoot;
+        parent = newRoot;
+      } else if (parent.balanceFactor > 1) {
+        // let newRoot = leftBalance(parent);
+        if (parent.left.balanceFactor === -1) rotateLeft(parent.left);
+        let newRoot = rotateRight(parent);
+
+        if (parent === this._root) this._root = newRoot;
+        parent = newRoot;
+      }
+
+      if (parent.balanceFactor === -1 || parent.balanceFactor === 1) break;
+
+      pp     = parent;
+      parent = parent.parent;
+    }
+
+    if (node.parent) {
+      if (node.parent.left === node) node.parent.left  = null;
+      else                           node.parent.right = null;
+    }
+
+    if (node === this._root) this._root = null;
+
+    this._size--;
+    return returnValue;
+  }
+
+
+  isBalanced() {
+    return isBalanced(this._root);
+  }
+
+
+  toString (printNode) {
+    return print(this._root, printNode);
+  }
+
 }
 
-
-/**
- * @param  {node} root
- * @return {node}
- */
-function minNode (root) {
-  var node = root;
-  while (node.left) node = node.left;
-  return node;
-}
-
-
-/**
- * @param  {node} root
- * @return {node}
- */
-function maxNode (root) {
-  var node = root;
-  while (node.right) node = node.right;
-  return node;
-}

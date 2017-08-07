@@ -3,7 +3,7 @@ import { assert }       from 'chai';
 
 import Tree from '../src/index';
 
-describe ('contains check', () => {
+describe('contains check', () => {
 
   it ('should return false if the tree is empty', () => {
     var tree = new Tree();

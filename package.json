@@ -12,7 +12,7 @@
     "build": "rollup -c build/rollup.config.umd.js && rollup -c build/rollup.config.es6.js",
     "pretest": "rollup -c build/rollup.config.tests.js",
     "prebenchmark": "npm run build",
-    "benchmark": "node tests/benchmark.js",
+    "benchmark": "node bench/benchmark.js",
     "start": "npm run test:watch",
     "test:watch": "nodemon --watch src --watch tests --exec 'npm test'",
     "test": "mocha build/tests-bundle.js",
