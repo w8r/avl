@@ -5,7 +5,13 @@
   "license": "MIT",
   "description": "AVL tree",
   "main": "dist/avl.js",
-  "jsnext:main": "dist/avl.es6.js",
+  "jsnext:main": "src/index",
+  "module": "src/index",
+  "jsnext:main": "index",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w8r/avl.git"
+  },
   "scripts": {
     "prebuild": "npm run lint",
     "lint": "eslint src",
@@ -34,5 +40,12 @@
     "rollup-watch": "^4.3.1",
     "source-map-support": "^0.4.15"
   },
+  "keywords": [
+    "binary-tree",
+    "bst",
+    "avl-tree",
+    "avl",
+    "balanced-search-tree"
+  ],
   "dependencies": {}
 }
