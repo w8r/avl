@@ -1,6 +1,6 @@
 # AVL tree
 
-AVL-tree: **[fast](#benchmarks)** and **simple** (< 500 lines of code)
+AVL-tree: **[fast](#benchmarks)**(non-recursive) and **simple**(< 500 lines of code)
 
 ## Install
 
