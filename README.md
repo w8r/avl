@@ -1,6 +1,6 @@
 # AVL tree
 
-**Fast** implementation of AVL-tree
+AVL-tree: **[fast](#benchmarks)** and **simple** (< 500 lines of code)
 
 ## Install
 
