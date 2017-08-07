@@ -150,14 +150,12 @@ AVL.prototype._insert = function _insert (root, key, value) {
       if (subtree.left === null){
         subtree.left = newNode;
         subtree    = newNode;
-        toBalance.pop();
       }
       subtree = subtree.left; // null will stop the loop
     } else if (cmp > 0) {
       if (subtree.right === null) {
         subtree.right = newNode;
         subtree     = newNode;
-        toBalance.pop();
       }
       subtree = subtree.right; // null will stop the loop
     } else {
