@@ -15,7 +15,11 @@ const tree = new AVLTree();
 
 Or get it from CDN
 ```
-<script src=""></script>
+<script src="https://unpkg.com/avl@1.1.0"></script>
+<script>
+  var tree = new avl();
+  ...
+</script>
 ```
 
 ## API
