@@ -1,13 +1,12 @@
 {
   "name": "avl",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Alexander Milevski <info@w8r.name>",
   "license": "MIT",
   "description": "AVL tree",
   "main": "dist/avl.js",
-  "jsnext:main": "src/index",
-  "module": "src/index",
   "jsnext:main": "index",
+  "module": "src/index",
   "repository": {
     "type": "git",
     "url": "https://github.com/w8r/avl.git"
