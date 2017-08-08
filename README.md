@@ -4,17 +4,17 @@
 
 ## Install
 
-```
+```shell
 npm i -S avl
 ```
 
-```
+```js
 import AVLTree from 'avl';
 const tree = new AVLTree();
 ```
 
 Or get it from CDN
-```
+```html
 <script src="https://unpkg.com/avl@1.1.0"></script>
 <script>
   var tree = new avl();
