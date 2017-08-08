@@ -1,13 +1,13 @@
+export type Key = any;
+
 export type Node = {
   parent?:       Node,
   left?:         Node,
   right?:        Node,
   balanceFactor: Number,
-  key?:          any,
+  key?:          Key,
   data?:         any
 };
-
-export type Key = any;
 
 export default class AVLTree {
   constructor(comparator?: ((a: Key, b: Key) => number));
