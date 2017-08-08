@@ -5,10 +5,34 @@ import { print, isBalanced } from './utils';
 //   return { parent, left, right, balanceFactor: height, key, data };
 // }
 
+/**
+ * @typedef {{
+ *   parent:        Node|Null,
+ *   left:          Node|Null,
+ *   right:         Node|Null,
+ *   balanceFactor: Number,
+ *   key:           any,
+ *   data:          object?
+ * }} Node
+ */
 
+/**
+ * @typedef {*} Key
+ */
+
+/**
+ * Default comparison function
+ * @param {*} a
+ * @param {*} b
+ */
 function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
 
 
+/**
+ * Single left rotation
+ * @param  {Node} node
+ * @return {Node}
+ */
 function rotateLeft (node) {
   var rightNode = node.right;
   node.right    = rightNode.left;
@@ -85,6 +109,11 @@ function rotateRight (node) {
 
 export default class Tree {
 
+  /**
+   * @class AVLTree
+   * @constructor
+   * @param  {Function(a:Key, b:Key):Number} [comparator]
+   */
   constructor (comparator) {
     this._comparator = comparator || DEFAULT_COMPARE;
     this._root = null;
@@ -92,15 +121,27 @@ export default class Tree {
   }
 
 
+  /**
+   * Clear the tree
+   */
   destroy() {
     this._root = null;
   }
 
+  /**
+   * Number of nodes
+   * @return {Number}
+   */
   get size () {
     return this._size;
   }
 
 
+  /**
+   * Whether the tree contains a node with the given key
+   * @param  {Key} key
+   * @return {Boolean}
+   */
   contains (key) {
     if (this._root)  {
       var node       = this._root;
@@ -117,6 +158,12 @@ export default class Tree {
 
 
   /* eslint-disable class-methods-use-this */
+
+  /**
+   * Successor node
+   * @param  {Node} node
+   * @return {Node|Null}
+   */
   next (node) {
     var sucessor = node.right;
     while (sucessor && sucessor.left) sucessor = sucessor.left;
@@ -124,6 +171,11 @@ export default class Tree {
   }
 
 
+  /**
+   * Predecessor node
+   * @param  {Node} node
+   * @return {Node|Null}
+   */
   prev (node) {
     var predecessor = node.left;
     while (predecessor && predecessor.right) predecessor = predecessor.right;
@@ -132,6 +184,10 @@ export default class Tree {
   /* eslint-enable class-methods-use-this */
 
 
+  /**
+   * @param  {Function(node:Node):void} fn
+   * @return {AVLTree}
+   */
   forEach(fn) {
     var current = this._root;
     var s = [], done = false, i = 0;
@@ -161,6 +217,10 @@ export default class Tree {
   }
 
 
+  /**
+   * Returns all keys in order
+   * @return {Array<Key>}
+   */
   keys () {
     var current = this._root;
     var s = [], r = [], done = false;
@@ -181,6 +241,10 @@ export default class Tree {
   }
 
 
+  /**
+   * Returns `data` fields of all nodes in order.
+   * @return {Array<*>}
+   */
   values () {
     var current = this._root;
     var s = [], r = [], done = false;
@@ -201,44 +265,81 @@ export default class Tree {
   }
 
 
+  /**
+   * Returns node with the minimum key
+   * @return {Node|Null}
+   */
   minNode () {
     var node = this._root;
-    while (node && node.left) node = node.left;
+    if (!node) return null;
+    while (node.left) node = node.left;
     return node;
   }
 
 
+  /**
+   * Returns node with the max key
+   * @return {Node|Null}
+   */
   maxNode () {
     var node = this._root;
-    while (node && node.right) node = node.right;
+    if (!node) return null;
+    while (node.right) node = node.right;
     return node;
   }
 
 
+  /**
+   * Min key
+   * @return {Key}
+   */
   min () {
-    return this.minNode().key;
+    var node = this._root;
+    if (!node) return null;
+    while (node.left) node = node.left;
+    return node.key;
+  }
+
+  /**
+   * Max key
+   * @return {Key|Null}
+   */
+  max () {
+    var node = this._root;
+    if (!node) return null;
+    while (node.right) node = node.right;
+    return node.key;
   }
 
 
-  max() {
-    return this.maxNode().key;
-  }
-
-
+  /**
+   * @return {Boolean}
+   */
   isEmpty() {
     return !this._root;
   }
 
 
+  /**
+   * Removes and returns the node with smallest key
+   * @return {Node|Null}
+   */
   pop () {
-    var node = this._root;
-    while (node.left) node = node.left;
-    var returnValue = { key: node.key, data: node.data };
-    this.remove(node.key);
+    var node = this._root, returnValue = null;
+    if (node) {
+      while (node.left) node = node.left;
+      returnValue = { key: node.key, data: node.data };
+      this.remove(node.key);
+    }
     return returnValue;
   }
 
 
+  /**
+   * Find node by key
+   * @param  {Key} key
+   * @return {Node|Null}
+   */
   find (key) {
     var root = this._root;
     if (root === null)    return null;
@@ -257,9 +358,13 @@ export default class Tree {
   }
 
 
+  /**
+   * Insert a node into the tree
+   * @param  {Key} key
+   * @param  {*}   [data]
+   * @return {Node|Null}
+   */
   insert (key, data) {
-    // if (this.contains(key)) return null;
-
     if (!this._root) {
       this._root = {
         parent: null, left: null, right: null, balanceFactor: 0,
@@ -317,10 +422,13 @@ export default class Tree {
   }
 
 
+  /**
+   * Removes the node from the tree. If not found, returns null.
+   * @param  {Key} key
+   * @return {Node:Null}
+   */
   remove (key) {
     if (!this._root) return null;
-
-    // if (!this.contains(key)) return null;
 
     var node = this._root;
     var compare = this._comparator;
@@ -413,11 +521,20 @@ export default class Tree {
   }
 
 
+  /**
+   * Returns true if the tree is balanced
+   * @return {Boolean}
+   */
   isBalanced() {
     return isBalanced(this._root);
   }
 
 
+  /**
+   * String representation of the tree - primitive horizontal print-out
+   * @param  {Function(Node):String} [printNode]
+   * @return {String}
+   */
   toString (printNode) {
     return print(this._root, printNode);
   }

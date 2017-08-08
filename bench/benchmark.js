@@ -3,6 +3,9 @@ const Tree      = require('../dist/avl');
 const FRB       = require('functional-red-black-tree');
 const RBTree    = require('bintrees').RBTree;
 
+require('google-closure-library');
+goog.require('goog.structs.AvlTree');
+
 
 const N = 1000;
 const rvalues = new Array(N).fill(0).map((n, i) => Math.floor(Math.random() * N));
@@ -14,6 +17,8 @@ const prefilledRB = new RBTree((a, b) => a - b);
 rvalues.forEach((v) => prefilledRB.insert(v));
 let prefilledFRB = new FRB();
 rvalues.forEach((v) => { prefilledFRB = prefilledFRB.insert(v); });
+const prefilledGCAVL = new goog.structs.AvlTree((a, b) => a - b);
+rvalues.forEach((v) => prefilledGCAVL.add(v));
 
 const options = {
   onStart (event) { console.log(this.name); },
@@ -33,6 +38,10 @@ new Benchmark.Suite(`Insert (x${N})`, options)
     let frb = new FRB();
     for (let i = 0; i < N; i++) frb = frb.insert(rvalues[i]);
   })
+  .add('Google Closure library AVL', () => {
+    let gcavl = new goog.structs.AvlTree((a, b) => a - b);
+    for (let i = 0; i < N; i++) gcavl.add(rvalues[i]);
+  })
   .add('AVL (current)', () => {
     const tree = new Tree();
     for (let i = 0; i < N; i++) tree.insert(rvalues[i]);
@@ -47,6 +56,9 @@ new Benchmark.Suite(`Random read (x${N})`, options)
   .add('Functional red black tree', () => {
     for (let i = N - 1; i; i--) prefilledFRB.get(rvalues[i]);
   })
+  .add('Google Closure library AVL', () => {
+    for (let i = 0; i < N; i++) prefilledGCAVL.inOrderTraverse((v) => v === rvalues[i]);
+  })
   .add('AVL (current)', () => {
     for (let i = N - 1; i; i--) prefilledAVL.find(rvalues[i]);
   })
@@ -55,10 +67,13 @@ new Benchmark.Suite(`Random read (x${N})`, options)
 
 new Benchmark.Suite(`Remove (x${N})`, options)
   .add('Bintrees', () => {
-    for (let i = N - 1; i; i--) prefilledRB.remove(rvalues[i]);
+    for (let i = 0; i < N; i++) prefilledRB.remove(rvalues[i]);
   })
   .add('Functional red black tree', () => {
-    for (let i = N - 1; i; i--) prefilledFRB = prefilledFRB.remove(rvalues[i]);
+    for (let i = 0; i < N; i++) prefilledFRB = prefilledFRB.remove(rvalues[i]);
+  })
+  .add('Google Closure library AVL', () => {
+    for (let i = 0; i < N; i++) prefilledGCAVL.remove(rvalues[i]);
   })
   .add('AVL (current)', () => {
     for (let i = N - 1; i; i--) prefilledAVL.remove(values[i]);

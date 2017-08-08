@@ -1,11 +1,25 @@
 
-export function print(root, printNode = (n) => n.key) {
+/**
+ * Prints tree horizontally
+ * @param  {Node}                       root
+ * @param  {Function(node:Node):String} [printNode]
+ * @return {String}
+ */
+export function print (root, printNode = (n) => n.key) {
   var out = [];
   row(root, '', true, (v) => out.push(v), printNode);
   return out.join('');
 }
 
-function row(root, prefix, isTail, out, printNode) {
+/**
+ * Prints level of the tree
+ * @param  {Node}                        root
+ * @param  {String}                      prefix
+ * @param  {Boolean}                     isTail
+ * @param  {Function(in:string):void}    out
+ * @param  {Function(node:Node):String}  printNode
+ */
+function row (root, prefix, isTail, out, printNode) {
   if (root) {
     out(`${ prefix }${ isTail ? '└── ' : '├── ' }${ printNode(root) }\n`);
     const indent = prefix + (isTail ? '    ' : '│   ');
@@ -15,9 +29,13 @@ function row(root, prefix, isTail, out, printNode) {
 }
 
 
+/**
+ * Is the tree balanced (none of the subtrees differ in height by more than 1)
+ * @param  {Node}    root
+ * @return {Boolean}
+ */
 export function isBalanced(root) {
-  // If node is empty then return true
-  if (root === null) return true;
+  if (root === null) return true; // If node is empty then return true
 
   // Get the height of left and right sub trees
   var lh = height(root.left);

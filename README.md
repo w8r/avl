@@ -1,4 +1,4 @@
-# AVL tree
+# AVL tree [![npm version](https://badge.fury.io/js/avl.svg)](https://badge.fury.io/js/avl) [![CircleCI](https://circleci.com/gh/w8r/avl.svg?style=svg)](https://circleci.com/gh/w8r/avl)
 
 [AVL-tree](https://en.wikipedia.org/wiki/AVL_tree): **[fast](#benchmarks)**(non-recursive) and **simple**(< 500 lines of code)
 
@@ -48,23 +48,30 @@ npm run benchmark
 
 ```
 Insert (x1000)
-Bintrees x 3,695 ops/sec ±1.71% (87 runs sampled)
-Functional red black tree x 2,233 ops/sec ±1.12% (87 runs sampled)
-AVL (current) x 7,340 ops/sec ±1.35% (87 runs sampled)
+Bintrees x 3,742 ops/sec ±0.89% (90 runs sampled)
+Functional red black tree x 1,880 ops/sec ±4.02% (78 runs sampled)
+Google Closure library AVL x 622 ops/sec ±4.22% (81 runs sampled)
+AVL (current) x 6,151 ops/sec ±8.50% (72 runs sampled)
 - Fastest is AVL (current)
 
 Random read (x1000)
-Bintrees x 7,454 ops/sec ±1.21% (83 runs sampled)
-Functional red black tree x 13,360 ops/sec ±0.80% (89 runs sampled)
-AVL (current) x 12,662 ops/sec ±0.75% (87 runs sampled)
-- Fastest is Functional red black tree
+Bintrees x 7,371 ops/sec ±2.69% (83 runs sampled)
+Functional red black tree x 13,010 ops/sec ±2.93% (83 runs sampled)
+Google Closure library AVL x 27.63 ops/sec ±1.04% (49 runs sampled)
+AVL (current) x 12,921 ops/sec ±1.83% (86 runs sampled)
+- Fastest is AVL (current)
 
 Remove (x1000)
-Bintrees x 21,853 ops/sec ±1.42% (87 runs sampled)
-Functional red black tree x 14,884 ops/sec ±1.58% (87 runs sampled)
-AVL (current) x 107,429 ops/sec ±0.79% (86 runs sampled)
+Bintrees x 106,837 ops/sec ±0.74% (86 runs sampled)
+Functional red black tree x 25,368 ops/sec ±0.89% (88 runs sampled)
+Google Closure library AVL x 31,719 ops/sec ±1.21% (89 runs sampled)
+AVL (current) x 108,131 ops/sec ±0.70% (88 runs sampled)
 - Fastest is AVL (current)
 ```
+
+Adding google closure library to the benchmark is, of course, unfair, cause the
+node.js version of it is not optimised by the compiler, but in this case it
+plays the role of straight-forward robust implementation.
 
 ## Develop
 

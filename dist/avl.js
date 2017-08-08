@@ -4,7 +4,13 @@
 	(global.avl = factory());
 }(this, (function () { 'use strict';
 
-function print(root, printNode) {
+/**
+ * Prints tree horizontally
+ * @param  {Node}                       root
+ * @param  {Function(node:Node):String} [printNode]
+ * @return {String}
+ */
+function print (root, printNode) {
   if ( printNode === void 0 ) printNode = function (n) { return n.key; };
 
   var out = [];
@@ -12,7 +18,15 @@ function print(root, printNode) {
   return out.join('');
 }
 
-function row(root, prefix, isTail, out, printNode) {
+/**
+ * Prints level of the tree
+ * @param  {Node}                        root
+ * @param  {String}                      prefix
+ * @param  {Boolean}                     isTail
+ * @param  {Function(in:string):void}    out
+ * @param  {Function(node:Node):String}  printNode
+ */
+function row (root, prefix, isTail, out, printNode) {
   if (root) {
     out(("" + prefix + (isTail ? '└── ' : '├── ') + (printNode(root)) + "\n"));
     var indent = prefix + (isTail ? '    ' : '│   ');
@@ -22,9 +36,13 @@ function row(root, prefix, isTail, out, printNode) {
 }
 
 
+/**
+ * Is the tree balanced (none of the subtrees differ in height by more than 1)
+ * @param  {Node}    root
+ * @return {Boolean}
+ */
 function isBalanced(root) {
-  // If node is empty then return true
-  if (root === null) { return true; }
+  if (root === null) { return true; } // If node is empty then return true
 
   // Get the height of left and right sub trees
   var lh = height(root.left);
@@ -54,10 +72,34 @@ function height(node) {
 //   return { parent, left, right, balanceFactor: height, key, data };
 // }
 
+/**
+ * @typedef {{
+ *   parent:        Node|Null,
+ *   left:          Node|Null,
+ *   right:         Node|Null,
+ *   balanceFactor: Number,
+ *   key:           any,
+ *   data:          object?
+ * }} Node
+ */
 
+/**
+ * @typedef {*} Key
+ */
+
+/**
+ * Default comparison function
+ * @param {*} a
+ * @param {*} b
+ */
 function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
 
 
+/**
+ * Single left rotation
+ * @param  {Node} node
+ * @return {Node}
+ */
 function rotateLeft (node) {
   var rightNode = node.right;
   node.right    = rightNode.left;
@@ -141,15 +183,27 @@ var Tree = function Tree (comparator) {
 var prototypeAccessors = { size: {} };
 
 
+/**
+ * Clear the tree
+ */
 Tree.prototype.destroy = function destroy () {
   this._root = null;
 };
 
+/**
+ * Number of nodes
+ * @return {Number}
+ */
 prototypeAccessors.size.get = function () {
   return this._size;
 };
 
 
+/**
+ * Whether the tree contains a node with the given key
+ * @param{Key} key
+ * @return {Boolean}
+ */
 Tree.prototype.contains = function contains (key) {
   if (this._root){
     var node     = this._root;
@@ -166,6 +220,12 @@ Tree.prototype.contains = function contains (key) {
 
 
 /* eslint-disable class-methods-use-this */
+
+/**
+ * Successor node
+ * @param{Node} node
+ * @return {Node|Null}
+ */
 Tree.prototype.next = function next (node) {
   var sucessor = node.right;
   while (sucessor && sucessor.left) { sucessor = sucessor.left; }
@@ -173,6 +233,11 @@ Tree.prototype.next = function next (node) {
 };
 
 
+/**
+ * Predecessor node
+ * @param{Node} node
+ * @return {Node|Null}
+ */
 Tree.prototype.prev = function prev (node) {
   var predecessor = node.left;
   while (predecessor && predecessor.right) { predecessor = predecessor.right; }
@@ -181,6 +246,10 @@ Tree.prototype.prev = function prev (node) {
 /* eslint-enable class-methods-use-this */
 
 
+/**
+ * @param{Function(node:Node):void} fn
+ * @return {AVLTree}
+ */
 Tree.prototype.forEach = function forEach (fn) {
   var current = this._root;
   var s = [], done = false, i = 0;
@@ -210,6 +279,10 @@ Tree.prototype.forEach = function forEach (fn) {
 };
 
 
+/**
+ * Returns all keys in order
+ * @return {Array<Key>}
+ */
 Tree.prototype.keys = function keys () {
   var current = this._root;
   var s = [], r = [], done = false;
@@ -230,6 +303,10 @@ Tree.prototype.keys = function keys () {
 };
 
 
+/**
+ * Returns `data` fields of all nodes in order.
+ * @return {Array<*>}
+ */
 Tree.prototype.values = function values () {
   var current = this._root;
   var s = [], r = [], done = false;
@@ -250,44 +327,81 @@ Tree.prototype.values = function values () {
 };
 
 
+/**
+ * Returns node with the minimum key
+ * @return {Node|Null}
+ */
 Tree.prototype.minNode = function minNode () {
   var node = this._root;
-  while (node && node.left) { node = node.left; }
+  if (!node) { return null; }
+  while (node.left) { node = node.left; }
   return node;
 };
 
 
+/**
+ * Returns node with the max key
+ * @return {Node|Null}
+ */
 Tree.prototype.maxNode = function maxNode () {
   var node = this._root;
-  while (node && node.right) { node = node.right; }
+  if (!node) { return null; }
+  while (node.right) { node = node.right; }
   return node;
 };
 
 
+/**
+ * Min key
+ * @return {Key}
+ */
 Tree.prototype.min = function min () {
-  return this.minNode().key;
+  var node = this._root;
+  if (!node) { return null; }
+  while (node.left) { node = node.left; }
+  return node.key;
 };
 
-
+/**
+ * Max key
+ * @return {Key|Null}
+ */
 Tree.prototype.max = function max () {
-  return this.maxNode().key;
+  var node = this._root;
+  if (!node) { return null; }
+  while (node.right) { node = node.right; }
+  return node.key;
 };
 
 
+/**
+ * @return {Boolean}
+ */
 Tree.prototype.isEmpty = function isEmpty () {
   return !this._root;
 };
 
 
+/**
+ * Removes and returns the node with smallest key
+ * @return {Node|Null}
+ */
 Tree.prototype.pop = function pop () {
-  var node = this._root;
-  while (node.left) { node = node.left; }
-  var returnValue = { key: node.key, data: node.data };
-  this.remove(node.key);
+  var node = this._root, returnValue = null;
+  if (node) {
+    while (node.left) { node = node.left; }
+    returnValue = { key: node.key, data: node.data };
+    this.remove(node.key);
+  }
   return returnValue;
 };
 
 
+/**
+ * Find node by key
+ * @param{Key} key
+ * @return {Node|Null}
+ */
 Tree.prototype.find = function find (key) {
   var root = this._root;
   if (root === null)  { return null; }
@@ -306,10 +420,14 @@ Tree.prototype.find = function find (key) {
 };
 
 
+/**
+ * Insert a node into the tree
+ * @param{Key} key
+ * @param{*} [data]
+ * @return {Node|Null}
+ */
 Tree.prototype.insert = function insert (key, data) {
     var this$1 = this;
-
-  // if (this.contains(key)) return null;
 
   if (!this._root) {
     this._root = {
@@ -368,12 +486,15 @@ Tree.prototype.insert = function insert (key, data) {
 };
 
 
+/**
+ * Removes the node from the tree. If not found, returns null.
+ * @param{Key} key
+ * @return {Node:Null}
+ */
 Tree.prototype.remove = function remove (key) {
     var this$1 = this;
 
   if (!this._root) { return null; }
-
-  // if (!this.contains(key)) return null;
 
   var node = this._root;
   var compare = this._comparator;
@@ -466,11 +587,20 @@ Tree.prototype.remove = function remove (key) {
 };
 
 
+/**
+ * Returns true if the tree is balanced
+ * @return {Boolean}
+ */
 Tree.prototype.isBalanced = function isBalanced$1 () {
   return isBalanced(this._root);
 };
 
 
+/**
+ * String representation of the tree - primitive horizontal print-out
+ * @param{Function(Node):String} [printNode]
+ * @return {String}
+ */
 Tree.prototype.toString = function toString (printNode) {
   return print(this._root, printNode);
 };
