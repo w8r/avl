@@ -1,0 +1,55 @@
+{
+  "name": "avl",
+  "version": "1.1.2",
+  "author": "Alexander Milevski <info@w8r.name>",
+  "license": "MIT",
+  "description": "AVL tree",
+  "main": "dist/avl.js",
+  "jsnext:main": "index",
+  "module": "src/index",
+  "types": "src/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w8r/avl.git"
+  },
+  "scripts": {
+    "prebuild": "npm run lint",
+    "lint": "eslint src",
+    "build": "rollup -c build/rollup.config.umd.js && rollup -c build/rollup.config.es6.js",
+    "pretest": "rollup -c build/rollup.config.tests.js",
+    "prebenchmark": "npm run build",
+    "benchmark": "node bench/benchmark.js",
+    "start": "npm run test:watch",
+    "test:watch": "nodemon --watch src --watch tests --exec 'npm test'",
+    "test": "mocha build/tests-bundle.js",
+    "prepublish": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "benchmark": "^2.1.4",
+    "bintrees": "^1.0.1",
+    "chai": "^4.1.0",
+    "eslint": "^4.2.0",
+    "eslint-config-airbnb-base": "^11.2.0",
+    "eslint-plugin-import": "^2.7.0",
+    "functional-red-black-tree": "^1.0.1",
+    "google-closure-library": "^20170626.0.0",
+    "mocha": "^3.4.2",
+    "nodemon": "^1.11.0",
+    "rollup": "^0.45.2",
+    "rollup-plugin-buble": "^0.15.0",
+    "rollup-plugin-multi-entry": "^2.0.1",
+    "rollup-watch": "^4.3.1",
+    "source-map-support": "^0.4.15",
+    "tern": "^0.21.0"
+  },
+  "keywords": [
+    "binary-tree",
+    "bst",
+    "avl-tree",
+    "avl",
+    "balanced-search-tree"
+  ],
+  "dependencies": {
+    "typescript": "^2.4.2"
+  }
+}
