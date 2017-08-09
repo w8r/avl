@@ -2,6 +2,16 @@
 
 [AVL-tree](https://en.wikipedia.org/wiki/AVL_tree): **[fast](#benchmarks)**(non-recursive) and **simple**(< 500 lines of code)
 
+![AVL-tree](https://upload.wikimedia.org/wikipedia/commons/a/ad/AVL-tree-wBalance_K.svg)
+
+| Operation     | Average       | Worst case   |
+| ------------- | ------------- | ------------ |
+| Space         | **O(n)**      | **O(n)**     |
+| Search        | **O(log n)**  | **O(log n)** |
+| Insert        | **O(log n)**  | **O(log n)** |
+| Delete        | **O(log n)**  | **O(log n)** |
+
+
 ## Install
 
 ```shell
@@ -15,7 +25,7 @@ const tree = new AVLTree();
 
 Or get it from CDN
 ```html
-<script src="https://unpkg.com/avl@1.1.0"></script>
+<script src="https://unpkg.com/avl"></script>
 <script>
   var tree = new avl();
   ...
@@ -39,6 +49,27 @@ Or get it from CDN
 * `tree.maxNode():Node` - Returns the node with highest key
 * `tree.prev(node):Node` - Predecessor node
 * `tree.next(node):Node` - Successor node
+
+## Example
+
+```js
+import Tree from 'avl';
+
+const t = new Tree();
+t.insert(5);
+t.insert(-10);
+t.insert(0);
+t.insert(33);
+t.insert(2);
+
+console.log(t.keys()); // [-10, 0, 2, 5, 33]
+console.log(t.size);   // 5
+console.log(t.min());  // -10
+console.log(t.max());  // -33
+
+t.remove(0);
+console.log(t.size);   // 4
+```
 
 ## Benchmarks
 
