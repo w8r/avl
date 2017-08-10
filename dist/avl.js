@@ -210,9 +210,9 @@ Tree.prototype.contains = function contains (key) {
     var comparator = this._comparator;
     while (node){
       var cmp = comparator(key, node.key);
-      if    (cmp === 0)   { return true; }
-      else if (cmp === -1) { node = node.left; }
-      else                  { node = node.right; }
+      if    (cmp === 0) { return true; }
+      else if (cmp < 0) { node = node.left; }
+      else              { node = node.right; }
     }
   }
   return false;
@@ -227,9 +227,19 @@ Tree.prototype.contains = function contains (key) {
  * @return {Node|Null}
  */
 Tree.prototype.next = function next (node) {
-  var sucessor = node.right;
-  while (sucessor && sucessor.left) { sucessor = sucessor.left; }
-  return sucessor;
+  var successor = node;
+  if (successor) {
+    if (successor.right) {
+      successor = successor.right;
+      while (successor && successor.left) { successor = successor.left; }
+    } else {
+      successor = node.parent;
+      while (successor && successor.right === node) {
+        node = successor; successor = successor.parent;
+      }
+    }
+  }
+  return successor;
 };
 
 
@@ -239,8 +249,19 @@ Tree.prototype.next = function next (node) {
  * @return {Node|Null}
  */
 Tree.prototype.prev = function prev (node) {
-  var predecessor = node.left;
-  while (predecessor && predecessor.right) { predecessor = predecessor.right; }
+  var predecessor = node;
+  if (predecessor) {
+    if (predecessor.left) {
+      predecessor = predecessor.left;
+      while (predecessor && predecessor.right) { predecessor = predecessor.right; }
+    } else {
+      predecessor = node.parent;
+      while (predecessor && predecessor.left === node) {
+        node = predecessor;
+        predecessor = predecessor.parent;
+      }
+    }
+  }
   return predecessor;
 };
 /* eslint-enable class-methods-use-this */
