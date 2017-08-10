@@ -3,7 +3,7 @@ import { assert }       from 'chai';
 
 import Tree from '../src/index';
 
-describe.only ('traversal check', () => {
+describe ('traversal check', () => {
 
   it ('should traverse the tree in order', () => {
     var tree = new Tree();
