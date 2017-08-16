@@ -286,6 +286,30 @@ export default class Tree {
   }
 
 
+  at (index) {
+    index = index % this.size;
+    if (index < 0) index = this.size - index;
+
+    var current = this._root;
+    var s = [], done = false, i = 0;
+
+    while (!done) {
+      if (current) {
+        s.push(current);
+        current = current.left;
+      } else {
+        if (s.length > 0) {
+          current = s.pop();
+          if (i === index) return current;
+          i++;
+          current = current.right;
+        } else done = true;
+      }
+    }
+    return null;
+  }
+
+
   /**
    * Returns node with the minimum key
    * @return {Node|Null}
@@ -403,21 +427,23 @@ export default class Tree {
     while (node) {
       cmp = compare(key, node.key);
       parent = node;
-      if      (cmp === 0) return null;
-      else if (cmp < 0)   node = node.left;
+      if      (cmp <= 0)  node = node.left; //return null;
+      //else if (cmp < 0)   node = node.left;
       else                node = node.right;
     }
 
     var newNode = {
       left: null, right: null, balanceFactor: 0,
-      parent, key, data,
+      parent, key, data
     };
     if (cmp < 0) parent.left  = newNode;
     else         parent.right = newNode;
 
     while (parent) {
-      if (compare(parent.key, key) < 0) parent.balanceFactor -= 1;
-      else                              parent.balanceFactor += 1;
+      cmp = compare(parent.key, key);
+      if (cmp === 0) console.log(parent.key, parent.balanceFactor);
+      if (cmp <= 0) parent.balanceFactor -= 1;
+      else          parent.balanceFactor += 1;
 
       if        (parent.balanceFactor === 0) break;
       else if   (parent.balanceFactor < -1) {

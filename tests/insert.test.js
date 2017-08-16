@@ -16,12 +16,6 @@ describe ('insert', () => {
     assert.equal(tree.size, 5);
   });
 
-  it('should not allow inserting of duplicate key', () => {
-    var tree = new Tree();
-    tree.insert(1);
-    tree.insert(1);
-    assert.equal(tree.size, 1);
-  });
 
   /**
    *         c
