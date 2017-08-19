@@ -15,7 +15,8 @@
   "scripts": {
     "prebuild": "npm run lint",
     "lint": "eslint src",
-    "build": "rollup -c build/rollup.config.umd.js && rollup -c build/rollup.config.es6.js",
+    "build": "rollup -c build/rollup.config.umd.js && rollup -c build/rollup.config.es6.js && npm run types",
+    "types": "tsc src/index.d.ts",
     "pretest": "rollup -c build/rollup.config.tests.js",
     "prebenchmark": "npm run build",
     "benchmark": "node bench/benchmark.js",
@@ -40,7 +41,8 @@
     "rollup-plugin-multi-entry": "^2.0.1",
     "rollup-watch": "^4.3.1",
     "source-map-support": "^0.4.15",
-    "tern": "^0.21.0"
+    "tern": "^0.21.0",
+    "typescript": "^2.4.2"
   },
   "keywords": [
     "binary-tree",
@@ -49,7 +51,5 @@
     "avl",
     "balanced-search-tree"
   ],
-  "dependencies": {
-    "typescript": "^2.4.2"
-  }
+  "dependencies": {}
 }
