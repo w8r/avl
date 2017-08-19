@@ -3,7 +3,7 @@ import { assert }       from 'chai';
 
 import Tree from '../src/index';
 
-describe ('traversal check', () => {
+describe('traversal check', () => {
 
   it ('should traverse the tree in order', () => {
     const tree = new Tree();
@@ -32,5 +32,27 @@ describe ('traversal check', () => {
     for (let i = 0; i < 9; i++) {
       assert.strictEqual(tree.next(tree.find(i)), tree.find(i + 1));
     }
+  });
+
+  it('should return null for predecessor of the min node', () => {
+    const tree = new Tree();
+    for (let i = 0; i < 10; i++) tree.insert(i);
+
+    let min = tree.minNode();
+    assert.isNull(tree.prev(min));
+    tree.remove(min.key);
+    min = tree.minNode();
+    assert.isNull(tree.prev(min));
+  });
+
+  it('should return null for successor of the max node', () => {
+    const tree = new Tree();
+    for (let i = 0; i < 10; i++) tree.insert(i);
+
+    let max = tree.maxNode();
+    assert.isNull(tree.next(max));
+    tree.remove(max.key);
+    max = tree.maxNode();
+    assert.isNull(tree.next(max));
   });
 });
