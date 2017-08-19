@@ -24,7 +24,8 @@ export default class AVLTree {
   max(): Key;
   minNode(): Node;
   maxNode(): Node;
-  forEach(fn:((node: Node) => (any)));
+  forEach(fn:((node: Node) => (any))):AVLTree;
+  load(keys:Array<Key>, values?:Array<any>):AVLTree;
   prev(node: Node): Node;
   next(node: Node): Node;
   isBalanced(): Boolean;

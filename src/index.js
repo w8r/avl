@@ -579,6 +579,22 @@ export default class Tree {
 
 
   /**
+   * Bulk-load items
+   * @param  {Array}  keys
+   * @param  {Array}  [values]
+   * @return {Tree}
+   */
+  load(keys = [], values = []) {
+    if (Array.isArray(keys)) {
+      for (var i = 0, len = keys.length; i < len; i++) {
+        this.insert(keys[i], values[i]);
+      }
+    }
+    return this;
+  }
+
+
+  /**
    * Returns true if the tree is balanced
    * @return {Boolean}
    */

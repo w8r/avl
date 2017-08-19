@@ -646,6 +646,26 @@ Tree.prototype.remove = function remove (key) {
 
 
 /**
+ * Bulk-load items
+ * @param{Array}keys
+ * @param{Array}[values]
+ * @return {Tree}
+ */
+Tree.prototype.load = function load (keys, values) {
+    var this$1 = this;
+    if ( keys === void 0 ) keys = [];
+    if ( values === void 0 ) values = [];
+
+  if (Array.isArray(keys)) {
+    for (var i = 0, len = keys.length; i < len; i++) {
+      this$1.insert(keys[i], values[i]);
+    }
+  }
+  return this;
+};
+
+
+/**
  * Returns true if the tree is balanced
  * @return {Boolean}
  */

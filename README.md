@@ -39,7 +39,7 @@ Or get it from CDN
 * `tree.remove(key:any)` - Remove item
 * `tree.find(key):Node|Null` - Return node by its key
 * `tree.contains(key):Boolean` - Whether a node with the given key is in the tree
-* `tree.forEach(function(node) {...})` In-order traversal
+* `tree.forEach(function(node) {...}):Tree` In-order traversal
 * `tree.keys():Array<key>` - Returns the array of keys in order
 * `tree.values():Array<*>` - Returns the array of data fields in order
 * `tree.pop():Node` - Removes smallest node
@@ -49,6 +49,7 @@ Or get it from CDN
 * `tree.maxNode():Node` - Returns the node with highest key
 * `tree.prev(node):Node` - Predecessor node
 * `tree.next(node):Node` - Successor node
+* `tree.load(keys:Array<*>, [values:Array<*>]):Tree` - Bulk-load items
 
 ## Example
 
