@@ -6,7 +6,7 @@ import Tree from '../src/index';
 describe('traversal check', () => {
 
   it ('should traverse the tree in order', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(1);
     tree.insert(0);

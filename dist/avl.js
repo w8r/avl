@@ -174,10 +174,13 @@ function rotateRight (node) {
 // }
 
 
-var Tree = function Tree (comparator) {
+var Tree = function Tree (comparator, noDuplicates) {
+  if ( noDuplicates === void 0 ) noDuplicates = false;
+
   this._comparator = comparator || DEFAULT_COMPARE;
   this._root = null;
   this._size = 0;
+  this._noDuplicates = !!noDuplicates;
 };
 
 var prototypeAccessors = { size: {} };
@@ -348,6 +351,30 @@ Tree.prototype.values = function values () {
 };
 
 
+Tree.prototype.at = function at (index) {
+  index = index % this.size;
+  if (index < 0) { index = this.size - index; }
+
+  var current = this._root;
+  var s = [], done = false, i = 0;
+
+  while (!done) {
+    if (current) {
+      s.push(current);
+      current = current.left;
+    } else {
+      if (s.length > 0) {
+        current = s.pop();
+        if (i === index) { return current; }
+        i++;
+        current = current.right;
+      } else { done = true; }
+    }
+  }
+  return null;
+};
+
+
 /**
  * Returns node with the minimum key
  * @return {Node|Null}
@@ -464,24 +491,34 @@ Tree.prototype.insert = function insert (key, data) {
   var parent= null;
   var cmp   = 0;
 
-  while (node) {
-    cmp = compare(key, node.key);
-    parent = node;
-    if    (cmp === 0) { return null; }
-    else if (cmp < 0) { node = node.left; }
-    else              { node = node.right; }
+  if (this._noDuplicates) {
+    while (node) {
+      cmp = compare(key, node.key);
+      parent = node;
+      if    (cmp === 0) { return null; }
+      else if (cmp < 0) { node = node.left; }
+      else              { node = node.right; }
+    }
+  } else {
+    while (node) {
+      cmp = compare(key, node.key);
+      parent = node;
+      if    (cmp <= 0){ node = node.left; } //return null;
+      else              { node = node.right; }
+    }
   }
 
   var newNode = {
     left: null, right: null, balanceFactor: 0,
-    parent: parent, key: key, data: data,
+    parent: parent, key: key, data: data
   };
-  if (cmp < 0) { parent.left= newNode; }
+  if (cmp <= 0) { parent.left= newNode; }
   else       { parent.right = newNode; }
 
   while (parent) {
-    if (compare(parent.key, key) < 0) { parent.balanceFactor -= 1; }
-    else                            { parent.balanceFactor += 1; }
+    cmp = compare(parent.key, key);
+    if (cmp < 0) { parent.balanceFactor -= 1; }
+    else       { parent.balanceFactor += 1; }
 
     if      (parent.balanceFactor === 0) { break; }
     else if (parent.balanceFactor < -1) {
@@ -605,6 +642,26 @@ Tree.prototype.remove = function remove (key) {
 
   this._size--;
   return returnValue;
+};
+
+
+/**
+ * Bulk-load items
+ * @param{Array}keys
+ * @param{Array}[values]
+ * @return {Tree}
+ */
+Tree.prototype.load = function load (keys, values) {
+    var this$1 = this;
+    if ( keys === void 0 ) keys = [];
+    if ( values === void 0 ) values = [];
+
+  if (Array.isArray(keys)) {
+    for (var i = 0, len = keys.length; i < len; i++) {
+      this$1.insert(keys[i], values[i]);
+    }
+  }
+  return this;
 };
 
 

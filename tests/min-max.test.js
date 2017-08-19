@@ -7,7 +7,7 @@ import Tree from '../src/index';
 describe ('find min and max', () => {
 
   it('should return the maximum key in the tree', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(5);
     tree.insert(1);
@@ -22,7 +22,7 @@ describe ('find min and max', () => {
   });
 
   it('should return the minimum key in the tree', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(5);
     tree.insert(3);
     tree.insert(1);
@@ -32,7 +32,7 @@ describe ('find min and max', () => {
   });
 
   it ('should return the max node', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(5, 10);
     tree.insert(1);
@@ -49,7 +49,7 @@ describe ('find min and max', () => {
   });
 
   it ('should return the min node', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(5);
     tree.insert(3);
     tree.insert(1, 20);
@@ -66,7 +66,7 @@ describe ('find min and max', () => {
   });
 
   it ('should support removing min node', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(5);
     tree.insert(3);
     tree.insert(1);

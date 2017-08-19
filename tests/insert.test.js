@@ -7,7 +7,7 @@ import Tree from '../src/index';
 describe ('insert', () => {
 
   it('should return the size of the tree', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.insert(2);
     tree.insert(3);
@@ -16,12 +16,6 @@ describe ('insert', () => {
     assert.equal(tree.size, 5);
   });
 
-  it('should not allow inserting of duplicate key', () => {
-    var tree = new Tree();
-    tree.insert(1);
-    tree.insert(1);
-    assert.equal(tree.size, 1);
-  });
 
   /**
    *         c
@@ -33,7 +27,7 @@ describe ('insert', () => {
    *   w   x
    */
   it('should correctly balance the left left case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(2);
     tree.insert(1);
@@ -50,7 +44,7 @@ describe ('insert', () => {
    *     x   y
    */
   it('should correctly balance the left right case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(1);
     tree.insert(2);
@@ -67,7 +61,7 @@ describe ('insert', () => {
    *       y   z
    */
   it('should correctly balance the right right case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.insert(2);
     tree.insert(3);
@@ -84,10 +78,29 @@ describe ('insert', () => {
    *   x   y
    */
   it('should correctly balance the right left case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.insert(3);
     tree.insert(2);
     assert.equal(tree._root.key, 2);
+  });
+
+  it ('should allow bulk-insert', () => {
+    const tree = new Tree();
+    const keys = [1,2,3,4];
+    const values = [4,3,2,1];
+    tree.load(keys, values);
+
+    assert.deepEqual(tree.keys(), keys);
+    assert.deepEqual(tree.values(), values);
+  });
+
+  it ('should allow bulk-insert without values', () => {
+    const tree = new Tree();
+    const keys = [1,2,3,4];
+    tree.load(keys);
+
+    assert.deepEqual(tree.keys(), keys);
+    assert.deepEqual(tree.values(), keys.map(k => undefined));
   });
 });

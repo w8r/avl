@@ -4,7 +4,7 @@ import { assert }       from 'chai';
 import Tree from '../src/index';
 
 function shuffle(array) {
-  var currentIndex = array.length, temporaryValue, randomIndex;
+  let currentIndex = array.length, temporaryValue, randomIndex;
   while (0 !== currentIndex) {
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;
@@ -19,7 +19,7 @@ function shuffle(array) {
 describe ('custom comparator', () => {
 
   it('should function correctly given a non-reverse customCompare', () => {
-    var tree = new Tree((a, b) => b - a);
+    const tree = new Tree((a, b) => b - a);
     tree.insert(2);
     tree.insert(1);
     tree.insert(3);
@@ -35,9 +35,9 @@ describe ('custom comparator', () => {
 
 
   it ('should support custom keys', () => {
-    var comparator = (a, b) => a.value - b.value;
-    var tree = new Tree(comparator);
-    var objects = new Array(10).fill(0).map((n, i) => {
+    const comparator = (a, b) => a.value - b.value;
+    const tree = new Tree(comparator);
+    const objects = new Array(10).fill(0).map((n, i) => {
       return { value: i, data: Math.pow(i, 2) };
     });
     shuffle(objects);

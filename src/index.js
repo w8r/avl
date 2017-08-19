@@ -113,11 +113,13 @@ export default class Tree {
    * @class AVLTree
    * @constructor
    * @param  {Function(a:Key, b:Key):Number} [comparator]
+   * @param  {Boolean}                       [noDuplicates=false] Disallow duplicates
    */
-  constructor (comparator) {
+  constructor (comparator, noDuplicates = false) {
     this._comparator = comparator || DEFAULT_COMPARE;
     this._root = null;
     this._size = 0;
+    this._noDuplicates = !!noDuplicates;
   }
 
 
@@ -286,6 +288,30 @@ export default class Tree {
   }
 
 
+  at (index) {
+    index = index % this.size;
+    if (index < 0) index = this.size - index;
+
+    var current = this._root;
+    var s = [], done = false, i = 0;
+
+    while (!done) {
+      if (current) {
+        s.push(current);
+        current = current.left;
+      } else {
+        if (s.length > 0) {
+          current = s.pop();
+          if (i === index) return current;
+          i++;
+          current = current.right;
+        } else done = true;
+      }
+    }
+    return null;
+  }
+
+
   /**
    * Returns node with the minimum key
    * @return {Node|Null}
@@ -400,24 +426,34 @@ export default class Tree {
     var parent  = null;
     var cmp     = 0;
 
-    while (node) {
-      cmp = compare(key, node.key);
-      parent = node;
-      if      (cmp === 0) return null;
-      else if (cmp < 0)   node = node.left;
-      else                node = node.right;
+    if (this._noDuplicates) {
+      while (node) {
+        cmp = compare(key, node.key);
+        parent = node;
+        if      (cmp === 0) return null;
+        else if (cmp < 0)   node = node.left;
+        else                node = node.right;
+      }
+    } else {
+      while (node) {
+        cmp = compare(key, node.key);
+        parent = node;
+        if      (cmp <= 0)  node = node.left; //return null;
+        else                node = node.right;
+      }
     }
 
     var newNode = {
       left: null, right: null, balanceFactor: 0,
-      parent, key, data,
+      parent, key, data
     };
-    if (cmp < 0) parent.left  = newNode;
+    if (cmp <= 0) parent.left  = newNode;
     else         parent.right = newNode;
 
     while (parent) {
-      if (compare(parent.key, key) < 0) parent.balanceFactor -= 1;
-      else                              parent.balanceFactor += 1;
+      cmp = compare(parent.key, key);
+      if (cmp < 0) parent.balanceFactor -= 1;
+      else         parent.balanceFactor += 1;
 
       if        (parent.balanceFactor === 0) break;
       else if   (parent.balanceFactor < -1) {
@@ -539,6 +575,22 @@ export default class Tree {
 
     this._size--;
     return returnValue;
+  }
+
+
+  /**
+   * Bulk-load items
+   * @param  {Array}  keys
+   * @param  {Array}  [values]
+   * @return {Tree}
+   */
+  load(keys = [], values = []) {
+    if (Array.isArray(keys)) {
+      for (var i = 0, len = keys.length; i < len; i++) {
+        this.insert(keys[i], values[i]);
+      }
+    }
+    return this;
   }
 
 

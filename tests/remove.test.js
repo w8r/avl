@@ -7,13 +7,13 @@ import Tree from '../src/index';
 describe ('remove', () => {
 
   it('should not change the size of a tree with no root', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.remove(1);
     assert.equal(tree.size, 0);
   });
 
   it('should remove a single key', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.remove(1);
     assert.isTrue(tree.isEmpty());
@@ -27,7 +27,7 @@ describe ('remove', () => {
    *   1   3                           3
    */
   it('should correctly balance the left left case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(4);
     tree.insert(2);
     tree.insert(6);
@@ -52,7 +52,7 @@ describe ('remove', () => {
    *         5   7                  5
    */
   it('should correctly balance the right right case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(4);
     tree.insert(2);
     tree.insert(6);
@@ -79,7 +79,7 @@ describe ('remove', () => {
    *     3   5
    */
   it('should correctly balance the left right case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(6);
     tree.insert(2);
     tree.insert(7);
@@ -108,7 +108,7 @@ describe ('remove', () => {
    *       4   6
    */
   it('should correctly balance the right left case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(2);
     tree.insert(7);
@@ -128,7 +128,7 @@ describe ('remove', () => {
   });
 
   it('should take the right child if the left does not exist', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.insert(2);
     tree.remove(1);
@@ -136,7 +136,7 @@ describe ('remove', () => {
   });
 
   it('should take the left child if the right does not exist', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(2);
     tree.insert(1);
     tree.remove(2);
@@ -144,7 +144,7 @@ describe ('remove', () => {
   });
 
   it('should get the right child if the node has 2 leaf children', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(2);
     tree.insert(1);
     tree.insert(3);
@@ -153,7 +153,7 @@ describe ('remove', () => {
   });
 
   it('should get the in-order successor if the node has both children', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(2);
     tree.insert(1);
     tree.insert(4);
