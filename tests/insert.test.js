@@ -7,7 +7,7 @@ import Tree from '../src/index';
 describe ('insert', () => {
 
   it('should return the size of the tree', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.insert(2);
     tree.insert(3);
@@ -27,7 +27,7 @@ describe ('insert', () => {
    *   w   x
    */
   it('should correctly balance the left left case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(2);
     tree.insert(1);
@@ -44,7 +44,7 @@ describe ('insert', () => {
    *     x   y
    */
   it('should correctly balance the left right case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(3);
     tree.insert(1);
     tree.insert(2);
@@ -61,7 +61,7 @@ describe ('insert', () => {
    *       y   z
    */
   it('should correctly balance the right right case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.insert(2);
     tree.insert(3);
@@ -78,7 +78,7 @@ describe ('insert', () => {
    *   x   y
    */
   it('should correctly balance the right left case', () => {
-    var tree = new Tree();
+    const tree = new Tree();
     tree.insert(1);
     tree.insert(3);
     tree.insert(2);

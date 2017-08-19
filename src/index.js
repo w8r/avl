@@ -113,11 +113,13 @@ export default class Tree {
    * @class AVLTree
    * @constructor
    * @param  {Function(a:Key, b:Key):Number} [comparator]
+   * @param  {Boolean}                       [noDuplicates=false] Disallow duplicates
    */
-  constructor (comparator) {
+  constructor (comparator, noDuplicates = false) {
     this._comparator = comparator || DEFAULT_COMPARE;
     this._root = null;
     this._size = 0;
+    this._noDuplicates = !!noDuplicates;
   }
 
 
@@ -424,26 +426,34 @@ export default class Tree {
     var parent  = null;
     var cmp     = 0;
 
-    while (node) {
-      cmp = compare(key, node.key);
-      parent = node;
-      if      (cmp <= 0)  node = node.left; //return null;
-      //else if (cmp < 0)   node = node.left;
-      else                node = node.right;
+    if (this._noDuplicates) {
+      while (node) {
+        cmp = compare(key, node.key);
+        parent = node;
+        if      (cmp === 0) return null;
+        else if (cmp < 0)   node = node.left;
+        else                node = node.right;
+      }
+    } else {
+      while (node) {
+        cmp = compare(key, node.key);
+        parent = node;
+        if      (cmp <= 0)  node = node.left; //return null;
+        else                node = node.right;
+      }
     }
 
     var newNode = {
       left: null, right: null, balanceFactor: 0,
       parent, key, data
     };
-    if (cmp < 0) parent.left  = newNode;
+    if (cmp <= 0) parent.left  = newNode;
     else         parent.right = newNode;
 
     while (parent) {
       cmp = compare(parent.key, key);
-      if (cmp === 0) console.log(parent.key, parent.balanceFactor);
-      if (cmp <= 0) parent.balanceFactor -= 1;
-      else          parent.balanceFactor += 1;
+      if (cmp < 0) parent.balanceFactor -= 1;
+      else         parent.balanceFactor += 1;
 
       if        (parent.balanceFactor === 0) break;
       else if   (parent.balanceFactor < -1) {
