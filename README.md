@@ -68,6 +68,7 @@ Or use the compiled version 'dist/avl.js'.
  unpredictable and hard to catch.
 
  **Duplicate keys**
+
  By default, tree allows duplicate keys. You can disable that by passing `true`
  as a second parameter to the tree constructor. In that case if you would try to
  instert an item with the key, that is already present in the tree, it will not
