@@ -64,6 +64,15 @@ Or get it from CDN
  to make sure it's working correctly, otherwise you may have bugs that are very
  unpredictable and hard to catch.
 
+ **Duplicate keys**
+ By default, tree allows duplicate keys. You can disable that by passing `true`
+ as a second parameter to the tree constructor. In that case if you would try to
+ instert an item with the key, that is already present in the tree, it will not
+ be inserted.
+ However, the default behavior allows for duplicate keys, cause there are cases
+ where you cannot predict that the keys would be unique (example: overlapping
+ points in 2D).
+
 ## Example
 
 ```js
