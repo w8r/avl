@@ -31,6 +31,7 @@ Or get it from CDN
   ...
 </script>
 ```
+Or use the compiled version 'dist/avl.js'.
 
 ## API
 
