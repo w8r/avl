@@ -33,6 +33,8 @@ Or get it from CDN
 ```
 Or use the compiled version 'dist/avl.js'.
 
+[Try it in your browser](https://npm.runkit.com/avl)
+
 ## API
 
 * `new AVLTree([comparator], [noDuplicates:Boolean])`, where `compare` is optional comparison function
