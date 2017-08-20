@@ -34,7 +34,7 @@ Or get it from CDN
 
 ## API
 
-* `new AVLTree([compare])`, where `compare` is optional comparison function
+* `new AVLTree([comparator], [noDuplicates:Boolean])`, where `compare` is optional comparison function
 * `tree.insert(key:any, [data:any])` - Insert item
 * `tree.remove(key:any)` - Remove item
 * `tree.find(key):Node|Null` - Return node by its key
@@ -50,6 +50,19 @@ Or get it from CDN
 * `tree.prev(node):Node` - Predecessor node
 * `tree.next(node):Node` - Successor node
 * `tree.load(keys:Array<*>, [values:Array<*>]):Tree` - Bulk-load items
+
+**Comparator**
+
+`function(a:key,b:key):Number` - Comparator function between two keys, it returns
+ * `0` if the keys are equal
+ * `<0` if `a < b`
+ * `>0` if `a > b`
+
+ The comparator function is extremely important, in case of errors you might end
+ up with a wrongly constructed tree or would not be able to retrieve your items.
+ It is crucial to test the return values of your `comparator(a,b)` and `comparator(b,a)`
+ to make sure it's working correctly, otherwise you may have bugs that are very
+ unpredictable and hard to catch.
 
 ## Example
 
@@ -70,6 +83,32 @@ console.log(t.max());  // -33
 
 t.remove(0);
 console.log(t.size);   // 4
+```
+
+**Custom comparator (reverse sort)**
+
+```js
+import Tree from 'avl';
+
+const t = new Tree((a, b) => b - a);
+t.insert(5);
+t.insert(-10);
+t.insert(0);
+t.insert(33);
+t.insert(2);
+
+console.log(t.keys()); // [33, 5, 2, 0, -10]
+```
+
+**Bulk insert**
+
+```js
+import Tree from 'avl';
+
+const t = new Tree();
+t.load([3,2,-10,20], ['C', 'B', 'A', 'D']);
+console.log(t.keys());   // [-10, 2, 3, 20]
+console.log(t.values()); // ['A', 'B', 'C', 'D']
 ```
 
 ## Benchmarks
