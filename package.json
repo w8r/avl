@@ -16,13 +16,13 @@
     "prebuild": "npm run lint",
     "lint": "eslint src",
     "build": "rollup -c build/rollup.config.umd.js && rollup -c build/rollup.config.es6.js && npm run types",
-    "types": "tsc src/index.d.ts",
+    "types": "tsc src/index.d.ts tests/types.ts",
     "pretest": "rollup -c build/rollup.config.tests.js",
     "prebenchmark": "npm run build",
     "benchmark": "node bench/benchmark.js",
     "start": "npm run test:watch",
     "test:watch": "nodemon --watch src --watch tests --exec 'npm test'",
-    "test": "mocha build/tests-bundle.js",
+    "test": "mocha build/tests-bundle.js && npm run types",
     "prepublish": "npm run build && npm test"
   },
   "devDependencies": {
