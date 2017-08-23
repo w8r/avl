@@ -15,12 +15,23 @@ function main() {
   const min: number = t.min()  // -10
   const max: number = t.max()  // -33
 
+  t.destroy()
   t.remove(0)
   t.size   // 4
+
+  t.forEach((node, index) => {
+    node.balanceFactor
+    node.data
+    node.key
+    node.left
+    node.parent
+    node.right
+  })
 }
 
 function customComparator() {
-  const t = new Tree<number, number>((a, b) => b - a)
+  const noDuplicates = true
+  const t = new Tree<number, number>((a, b) => b - a, noDuplicates)
   t.insert(5)
   t.insert(-10)
   t.insert(0)

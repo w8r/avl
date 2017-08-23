@@ -26,10 +26,11 @@ export default class AVLTree<Key extends any, Value extends any> {
   max(): Key;
   minNode(): Node<Key, Value>;
   maxNode(): Node<Key, Value>;
-  forEach(fn:((node: Node<Key, Value>) => Value)): AVLTree<Key, Value>;
+  forEach(callback: (node: Node<Key, Value>, index: number) => void): AVLTree<Key, Value>;
   load(keys: Array<Key>, values?:Array<Value>): AVLTree<Key, Value>;
   prev(node: Node<Key, Value>): Node<Key, Value>;
   next(node: Node<Key, Value>): Node<Key, Value>;
   isBalanced(): boolean;
   toString(): string;
+  destroy(): AVLTree<Key, Value>;
 }

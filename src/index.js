@@ -125,9 +125,11 @@ export default class Tree {
 
   /**
    * Clear the tree
+   * @return {Tree}
    */
   destroy() {
     this._root = null;
+    return this;
   }
 
   /**
@@ -208,10 +210,10 @@ export default class Tree {
 
 
   /**
-   * @param  {Function(node:Node):void} fn
+   * @param  {Function(node:Node, index:number):void} callback
    * @return {AVLTree}
    */
-  forEach(fn) {
+  forEach(callback) {
     var current = this._root;
     var s = [], done = false, i = 0;
 
@@ -228,7 +230,7 @@ export default class Tree {
         // empty you are done
         if (s.length > 0) {
           current = s.pop();
-          fn(current, i++);
+          callback(current, i++);
 
           // We have visited the node and its left
           // subtree. Now, it's right subtree's turn
@@ -266,7 +268,7 @@ export default class Tree {
 
   /**
    * Returns `data` fields of all nodes in order.
-   * @return {Array<*>}
+   * @return {Array<Value>}
    */
   values () {
     var current = this._root;
@@ -408,7 +410,7 @@ export default class Tree {
   /**
    * Insert a node into the tree
    * @param  {Key} key
-   * @param  {*}   [data]
+   * @param  {Value}   [data]
    * @return {Node|Null}
    */
   insert (key, data) {
@@ -580,8 +582,8 @@ export default class Tree {
 
   /**
    * Bulk-load items
-   * @param  {Array}  keys
-   * @param  {Array}  [values]
+   * @param  {Array<Key>}  keys
+   * @param  {Array<Value>}  [values]
    * @return {Tree}
    */
   load(keys = [], values = []) {
