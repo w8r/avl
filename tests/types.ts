@@ -1,4 +1,5 @@
 import AVLTree from '../'
+import { Node } from '../'
 
 function main() {
   const t = new AVLTree<number, number>()
@@ -20,12 +21,12 @@ function main() {
   t.size   // 4
 
   t.forEach((node, index) => {
-    node.balanceFactor
-    node.data
-    node.key
-    node.left
-    node.parent
-    node.right
+    const balanceFactor: number = node.balanceFactor
+    const data: number = node.data
+    const key: number = node.key
+    const left: Node<number, number> = node.left
+    const parent: Node<number, number> = node.parent
+    const right: Node<number, number> = node.right
   })
 }
 

@@ -2,7 +2,7 @@ export type Node<Key extends any, Value extends any> = {
   parent?:       Node<Key, Value>,
   left?:         Node<Key, Value>,
   right?:        Node<Key, Value>,
-  balanceFactor: Number,
+  balanceFactor: number,
   key?:          Key,
   data?:         Value
 };
