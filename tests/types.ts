@@ -1,7 +1,7 @@
-import Tree from '../'
+import AVLTree from '../'
 
 function main() {
-  const t = new Tree<number, number>()
+  const t = new AVLTree<number, number>()
   t.insert(5)
   t.insert(-10)
   t.insert(0)
@@ -31,7 +31,7 @@ function main() {
 
 function customComparator() {
   const noDuplicates = true
-  const t = new Tree<number, number>((a, b) => b - a, noDuplicates)
+  const t = new AVLTree<number, number>((a, b) => b - a, noDuplicates)
   t.insert(5)
   t.insert(-10)
   t.insert(0)
@@ -44,7 +44,7 @@ function customComparator() {
 }
 
 function bulkInsert() {
-  const t = new Tree<number, string>()
+  const t = new AVLTree<number, string>()
   t.load([3, 2, -10, 20], ['C', 'B', 'A', 'D'])
 
   // Assert Type
