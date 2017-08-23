@@ -28,6 +28,7 @@ import { print, isBalanced } from './utils';
  * Default comparison function
  * @param {Key} a
  * @param {Key} b
+ * @returns {number}
  */
 function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
 
@@ -124,7 +125,7 @@ export default class AVLTree {
    * @class AVLTree
    * @constructor
    * @param  {comparatorCallback} [comparator]
-   * @param  {Boolean}            [noDuplicates=false] Disallow duplicates
+   * @param  {boolean}            [noDuplicates=false] Disallow duplicates
    */
   constructor (comparator, noDuplicates = false) {
     this._comparator = comparator || DEFAULT_COMPARE;
@@ -627,7 +628,7 @@ export default class AVLTree {
   /**
    * String representation of the tree - primitive horizontal print-out
    * @param  {Function(Node):string} [printNode]
-   * @return {String}
+   * @return {string}
    */
   toString (printNode) {
     return print(this._root, printNode);
