@@ -1,4 +1,13 @@
 /**
+ * avl v1.4.0
+ * Fast AVL tree for Node and browser
+ *
+ * @author Alexander Milevski <info@w8r.name>
+ * @license MIT
+ * @preserve
+ */
+
+/**
  * Prints tree horizontally
  * @param  {Node}                       root
  * @param  {Function(node:Node):String} [printNode]

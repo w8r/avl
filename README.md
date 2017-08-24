@@ -27,7 +27,7 @@ Or get it from CDN
 ```html
 <script src="https://unpkg.com/avl"></script>
 <script>
-  var tree = new avl();
+  var tree = new AVLTree();
   ...
 </script>
 ```

@@ -3,7 +3,7 @@
   "version": "1.4.0",
   "author": "Alexander Milevski <info@w8r.name>",
   "license": "MIT",
-  "description": "AVL tree",
+  "description": "Fast AVL tree for Node and browser",
   "main": "dist/avl.js",
   "jsnext:main": "src/index",
   "module": "src/index",

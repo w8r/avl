@@ -1,7 +1,16 @@
+/**
+ * avl v1.4.0
+ * Fast AVL tree for Node and browser
+ *
+ * @author Alexander Milevski <info@w8r.name>
+ * @license MIT
+ * @preserve
+ */
+
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.avl = factory());
+	(global.AVLTree = factory());
 }(this, (function () { 'use strict';
 
 /**
