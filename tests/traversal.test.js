@@ -55,4 +55,15 @@ describe('traversal check', () => {
     max = tree.maxNode();
     assert.isNull(tree.next(max));
   });
+
+  it ('should be able to get a node by its index', () => {
+    const tree = new Tree();
+    for (let i = 0; i < 10; i++) tree.insert(i);
+
+    for (let i = 0; i < 10; i++) assert.equal(tree.at(i).key, i);
+
+    assert.isNull(tree.at(10));
+    assert.isNull(tree.at(-1));
+    assert.isNull(tree.at('a'));
+  });
 });

@@ -365,9 +365,15 @@ AVLTree.prototype.values = function values () {
 };
 
 
+/**
+ * Returns node at given index
+ * @param{number} index
+ * @return {?Node}
+ */
 AVLTree.prototype.at = function at (index) {
-  index = index % this.size;
-  if (index < 0) { index = this.size - index; }
+  // removed after a consideration, more misleading than useful
+  // index = index % this.size;
+  // if (index < 0) index = this.size - index;
 
   var current = this._root;
   var s = [], done = false, i = 0;
@@ -467,8 +473,8 @@ AVLTree.prototype.pop = function pop () {
  */
 AVLTree.prototype.find = function find (key) {
   var root = this._root;
-  if (root === null)  { return null; }
-  if (key === root.key) { return root; }
+  // if (root === null)  return null;
+  // if (key === root.key) return root;
 
   var subtree = root, cmp;
   var compare = this._comparator;
@@ -524,9 +530,12 @@ AVLTree.prototype.insert = function insert (key, data) {
   }
 
   var newNode = {
-    left: null, right: null, balanceFactor: 0,
+    left: null,
+    right: null,
+    balanceFactor: 0,
     parent: parent, key: key, data: data
   };
+  var newRoot;
   if (cmp <= 0) { parent.left= newNode; }
   else       { parent.right = newNode; }
 
@@ -537,18 +546,20 @@ AVLTree.prototype.insert = function insert (key, data) {
 
     if      (parent.balanceFactor === 0) { break; }
     else if (parent.balanceFactor < -1) {
-      //let newRoot = rightBalance(parent);
+      // inlined
+      //var newRoot = rightBalance(parent);
       if (parent.right.balanceFactor === 1) { rotateRight(parent.right); }
-      var newRoot = rotateLeft(parent);
+      newRoot = rotateLeft(parent);
 
       if (parent === this$1._root) { this$1._root = newRoot; }
       break;
     } else if (parent.balanceFactor > 1) {
-      // let newRoot = leftBalance(parent);
+      // inlined
+      // var newRoot = leftBalance(parent);
       if (parent.left.balanceFactor === -1) { rotateLeft(parent.left); }
-      var newRoot$1 = rotateRight(parent);
+      newRoot = rotateRight(parent);
 
-      if (parent === this$1._root) { this$1._root = newRoot$1; }
+      if (parent === this$1._root) { this$1._root = newRoot; }
       break;
     }
     parent = parent.parent;
@@ -571,18 +582,21 @@ AVLTree.prototype.remove = function remove (key) {
 
   var node = this._root;
   var compare = this._comparator;
+  var cmp = 0;
 
   while (node) {
-    var cmp = compare(key, node.key);
+    cmp = compare(key, node.key);
     if    (cmp === 0) { break; }
     else if (cmp < 0) { node = node.left; }
     else              { node = node.right; }
   }
   if (!node) { return null; }
+
   var returnValue = node.key;
+  var max, min;
 
   if (node.left) {
-    var max = node.left;
+    max = node.left;
 
     while (max.left || max.right) {
       while (max.right) { max = max.right; }
@@ -601,7 +615,7 @@ AVLTree.prototype.remove = function remove (key) {
   }
 
   if (node.right) {
-    var min = node.right;
+    min = node.right;
 
     while (min.left || min.right) {
       while (min.left) { min = min.left; }
@@ -621,25 +635,28 @@ AVLTree.prototype.remove = function remove (key) {
 
   var parent = node.parent;
   var pp   = node;
+  var newRoot;
 
   while (parent) {
     if (parent.left === pp) { parent.balanceFactor -= 1; }
     else                  { parent.balanceFactor += 1; }
 
     if      (parent.balanceFactor < -1) {
-      //let newRoot = rightBalance(parent);
+      // inlined
+      //var newRoot = rightBalance(parent);
       if (parent.right.balanceFactor === 1) { rotateRight(parent.right); }
-      var newRoot = rotateLeft(parent);
+      newRoot = rotateLeft(parent);
 
       if (parent === this$1._root) { this$1._root = newRoot; }
       parent = newRoot;
     } else if (parent.balanceFactor > 1) {
-      // let newRoot = leftBalance(parent);
+      // inlined
+      // var newRoot = leftBalance(parent);
       if (parent.left.balanceFactor === -1) { rotateLeft(parent.left); }
-      var newRoot$1 = rotateRight(parent);
+      newRoot = rotateRight(parent);
 
-      if (parent === this$1._root) { this$1._root = newRoot$1; }
-      parent = newRoot$1;
+      if (parent === this$1._root) { this$1._root = newRoot; }
+      parent = newRoot;
     }
 
     if (parent.balanceFactor === -1 || parent.balanceFactor === 1) { break; }

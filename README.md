@@ -41,6 +41,7 @@ Or use the compiled version 'dist/avl.js'.
 * `tree.insert(key:any, [data:any])` - Insert item
 * `tree.remove(key:any)` - Remove item
 * `tree.find(key):Node|Null` - Return node by its key
+* `tree.at(index:Number):Node|Null` - Return node by its index in sorted order of keys
 * `tree.contains(key):Boolean` - Whether a node with the given key is in the tree
 * `tree.forEach(function(node) {...}):Tree` In-order traversal
 * `tree.keys():Array<key>` - Returns the array of keys in order
