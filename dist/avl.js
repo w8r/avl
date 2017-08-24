@@ -74,12 +74,12 @@ function height(node) {
 
 /**
  * @typedef {{
- *   parent:        Node|Null,
- *   left:          Node|Null,
- *   right:         Node|Null,
- *   balanceFactor: Number,
- *   key:           any,
- *   data:          object?
+ *   parent:        ?Node,
+ *   left:          ?Node,
+ *   right:         ?Node,
+ *   balanceFactor: number,
+ *   key:           Key,
+ *   data:          Value
  * }} Node
  */
 
@@ -88,9 +88,14 @@ function height(node) {
  */
 
 /**
+ * @typedef {*} Value
+ */
+
+/**
  * Default comparison function
- * @param {*} a
- * @param {*} b
+ * @param {Key} a
+ * @param {Key} b
+ * @returns {number}
  */
 function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
 
@@ -174,7 +179,7 @@ function rotateRight (node) {
 // }
 
 
-var Tree = function Tree (comparator, noDuplicates) {
+var AVLTree = function AVLTree (comparator, noDuplicates) {
   if ( noDuplicates === void 0 ) noDuplicates = false;
 
   this._comparator = comparator || DEFAULT_COMPARE;
@@ -188,14 +193,16 @@ var prototypeAccessors = { size: {} };
 
 /**
  * Clear the tree
+ * @return {AVLTree}
  */
-Tree.prototype.destroy = function destroy () {
+AVLTree.prototype.destroy = function destroy () {
   this._root = null;
+  return this;
 };
 
 /**
  * Number of nodes
- * @return {Number}
+ * @return {number}
  */
 prototypeAccessors.size.get = function () {
   return this._size;
@@ -205,9 +212,9 @@ prototypeAccessors.size.get = function () {
 /**
  * Whether the tree contains a node with the given key
  * @param{Key} key
- * @return {Boolean}
+ * @return {boolean} true/false
  */
-Tree.prototype.contains = function contains (key) {
+AVLTree.prototype.contains = function contains (key) {
   if (this._root){
     var node     = this._root;
     var comparator = this._comparator;
@@ -227,9 +234,9 @@ Tree.prototype.contains = function contains (key) {
 /**
  * Successor node
  * @param{Node} node
- * @return {Node|Null}
+ * @return {?Node}
  */
-Tree.prototype.next = function next (node) {
+AVLTree.prototype.next = function next (node) {
   var successor = node;
   if (successor) {
     if (successor.right) {
@@ -249,9 +256,9 @@ Tree.prototype.next = function next (node) {
 /**
  * Predecessor node
  * @param{Node} node
- * @return {Node|Null}
+ * @return {?Node}
  */
-Tree.prototype.prev = function prev (node) {
+AVLTree.prototype.prev = function prev (node) {
   var predecessor = node;
   if (predecessor) {
     if (predecessor.left) {
@@ -271,10 +278,17 @@ Tree.prototype.prev = function prev (node) {
 
 
 /**
- * @param{Function(node:Node):void} fn
+ * Callback for forEach
+ * @callback forEachCallback
+ * @param {Node} node
+ * @param {number} index
+ */
+
+/**
+ * @param{forEachCallback} callback
  * @return {AVLTree}
  */
-Tree.prototype.forEach = function forEach (fn) {
+AVLTree.prototype.forEach = function forEach (callback) {
   var current = this._root;
   var s = [], done = false, i = 0;
 
@@ -291,7 +305,7 @@ Tree.prototype.forEach = function forEach (fn) {
       // empty you are done
       if (s.length > 0) {
         current = s.pop();
-        fn(current, i++);
+        callback(current, i++);
 
         // We have visited the node and its left
         // subtree. Now, it's right subtree's turn
@@ -307,7 +321,7 @@ Tree.prototype.forEach = function forEach (fn) {
  * Returns all keys in order
  * @return {Array<Key>}
  */
-Tree.prototype.keys = function keys () {
+AVLTree.prototype.keys = function keys () {
   var current = this._root;
   var s = [], r = [], done = false;
 
@@ -329,9 +343,9 @@ Tree.prototype.keys = function keys () {
 
 /**
  * Returns `data` fields of all nodes in order.
- * @return {Array<*>}
+ * @return {Array<Value>}
  */
-Tree.prototype.values = function values () {
+AVLTree.prototype.values = function values () {
   var current = this._root;
   var s = [], r = [], done = false;
 
@@ -351,7 +365,7 @@ Tree.prototype.values = function values () {
 };
 
 
-Tree.prototype.at = function at (index) {
+AVLTree.prototype.at = function at (index) {
   index = index % this.size;
   if (index < 0) { index = this.size - index; }
 
@@ -377,9 +391,9 @@ Tree.prototype.at = function at (index) {
 
 /**
  * Returns node with the minimum key
- * @return {Node|Null}
+ * @return {?Node}
  */
-Tree.prototype.minNode = function minNode () {
+AVLTree.prototype.minNode = function minNode () {
   var node = this._root;
   if (!node) { return null; }
   while (node.left) { node = node.left; }
@@ -389,9 +403,9 @@ Tree.prototype.minNode = function minNode () {
 
 /**
  * Returns node with the max key
- * @return {Node|Null}
+ * @return {?Node}
  */
-Tree.prototype.maxNode = function maxNode () {
+AVLTree.prototype.maxNode = function maxNode () {
   var node = this._root;
   if (!node) { return null; }
   while (node.right) { node = node.right; }
@@ -401,20 +415,21 @@ Tree.prototype.maxNode = function maxNode () {
 
 /**
  * Min key
- * @return {Key}
+ * @return {?Key}
  */
-Tree.prototype.min = function min () {
+AVLTree.prototype.min = function min () {
   var node = this._root;
   if (!node) { return null; }
   while (node.left) { node = node.left; }
   return node.key;
 };
 
+
 /**
  * Max key
- * @return {Key|Null}
+ * @return {?Key}
  */
-Tree.prototype.max = function max () {
+AVLTree.prototype.max = function max () {
   var node = this._root;
   if (!node) { return null; }
   while (node.right) { node = node.right; }
@@ -423,18 +438,18 @@ Tree.prototype.max = function max () {
 
 
 /**
- * @return {Boolean}
+ * @return {boolean} true/false
  */
-Tree.prototype.isEmpty = function isEmpty () {
+AVLTree.prototype.isEmpty = function isEmpty () {
   return !this._root;
 };
 
 
 /**
  * Removes and returns the node with smallest key
- * @return {Node|Null}
+ * @return {?Node}
  */
-Tree.prototype.pop = function pop () {
+AVLTree.prototype.pop = function pop () {
   var node = this._root, returnValue = null;
   if (node) {
     while (node.left) { node = node.left; }
@@ -448,9 +463,9 @@ Tree.prototype.pop = function pop () {
 /**
  * Find node by key
  * @param{Key} key
- * @return {Node|Null}
+ * @return {?Node}
  */
-Tree.prototype.find = function find (key) {
+AVLTree.prototype.find = function find (key) {
   var root = this._root;
   if (root === null)  { return null; }
   if (key === root.key) { return root; }
@@ -471,10 +486,10 @@ Tree.prototype.find = function find (key) {
 /**
  * Insert a node into the tree
  * @param{Key} key
- * @param{*} [data]
- * @return {Node|Null}
+ * @param{Value} [data]
+ * @return {?Node}
  */
-Tree.prototype.insert = function insert (key, data) {
+AVLTree.prototype.insert = function insert (key, data) {
     var this$1 = this;
 
   if (!this._root) {
@@ -547,9 +562,9 @@ Tree.prototype.insert = function insert (key, data) {
 /**
  * Removes the node from the tree. If not found, returns null.
  * @param{Key} key
- * @return {Node:Null}
+ * @return {?Node}
  */
-Tree.prototype.remove = function remove (key) {
+AVLTree.prototype.remove = function remove (key) {
     var this$1 = this;
 
   if (!this._root) { return null; }
@@ -647,11 +662,11 @@ Tree.prototype.remove = function remove (key) {
 
 /**
  * Bulk-load items
- * @param{Array}keys
- * @param{Array}[values]
- * @return {Tree}
+ * @param{Array<Key>}keys
+ * @param{Array<Value>}[values]
+ * @return {AVLTree}
  */
-Tree.prototype.load = function load (keys, values) {
+AVLTree.prototype.load = function load (keys, values) {
     var this$1 = this;
     if ( keys === void 0 ) keys = [];
     if ( values === void 0 ) values = [];
@@ -667,25 +682,25 @@ Tree.prototype.load = function load (keys, values) {
 
 /**
  * Returns true if the tree is balanced
- * @return {Boolean}
+ * @return {boolean}
  */
-Tree.prototype.isBalanced = function isBalanced$1 () {
+AVLTree.prototype.isBalanced = function isBalanced$1 () {
   return isBalanced(this._root);
 };
 
 
 /**
  * String representation of the tree - primitive horizontal print-out
- * @param{Function(Node):String} [printNode]
- * @return {String}
+ * @param{Function(Node):string} [printNode]
+ * @return {string}
  */
-Tree.prototype.toString = function toString (printNode) {
+AVLTree.prototype.toString = function toString (printNode) {
   return print(this._root, printNode);
 };
 
-Object.defineProperties( Tree.prototype, prototypeAccessors );
+Object.defineProperties( AVLTree.prototype, prototypeAccessors );
 
-return Tree;
+return AVLTree;
 
 })));
 //# sourceMappingURL=avl.js.map

@@ -5,7 +5,7 @@
   "license": "MIT",
   "description": "AVL tree",
   "main": "dist/avl.js",
-  "jsnext:main": "index",
+  "jsnext:main": "src/index",
   "module": "src/index",
   "types": "src/index.d.ts",
   "files": [
