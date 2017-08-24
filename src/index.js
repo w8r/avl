@@ -7,12 +7,12 @@ import { print, isBalanced } from './utils';
 
 /**
  * @typedef {{
- *   parent:        Node|Null,
- *   left:          Node|Null,
- *   right:         Node|Null,
- *   balanceFactor: Number,
- *   key:           any,
- *   data:          object?
+ *   parent:        ?Node,
+ *   left:          ?Node,
+ *   right:         ?Node,
+ *   balanceFactor: number,
+ *   key:           Key,
+ *   data:          Value
  * }} Node
  */
 
@@ -21,9 +21,14 @@ import { print, isBalanced } from './utils';
  */
 
 /**
+ * @typedef {*} Value
+ */
+
+/**
  * Default comparison function
- * @param {*} a
- * @param {*} b
+ * @param {Key} a
+ * @param {Key} b
+ * @returns {number}
  */
 function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
 
@@ -107,13 +112,20 @@ function rotateRight (node) {
 // }
 
 
-export default class Tree {
+export default class AVLTree {
+  /**
+   * Callback for comparator
+   * @callback comparatorCallback
+   * @param {Key} a
+   * @param {Key} b
+   * @returns {number}
+   */
 
   /**
    * @class AVLTree
    * @constructor
-   * @param  {Function(a:Key, b:Key):Number} [comparator]
-   * @param  {Boolean}                       [noDuplicates=false] Disallow duplicates
+   * @param  {comparatorCallback} [comparator]
+   * @param  {boolean}            [noDuplicates=false] Disallow duplicates
    */
   constructor (comparator, noDuplicates = false) {
     this._comparator = comparator || DEFAULT_COMPARE;
@@ -125,14 +137,16 @@ export default class Tree {
 
   /**
    * Clear the tree
+   * @return {AVLTree}
    */
   destroy() {
     this._root = null;
+    return this;
   }
 
   /**
    * Number of nodes
-   * @return {Number}
+   * @return {number}
    */
   get size () {
     return this._size;
@@ -142,7 +156,7 @@ export default class Tree {
   /**
    * Whether the tree contains a node with the given key
    * @param  {Key} key
-   * @return {Boolean}
+   * @return {boolean} true/false
    */
   contains (key) {
     if (this._root)  {
@@ -164,7 +178,7 @@ export default class Tree {
   /**
    * Successor node
    * @param  {Node} node
-   * @return {Node|Null}
+   * @return {?Node}
    */
   next (node) {
     var successor = node;
@@ -186,7 +200,7 @@ export default class Tree {
   /**
    * Predecessor node
    * @param  {Node} node
-   * @return {Node|Null}
+   * @return {?Node}
    */
   prev (node) {
     var predecessor = node;
@@ -208,10 +222,17 @@ export default class Tree {
 
 
   /**
-   * @param  {Function(node:Node):void} fn
+   * Callback for forEach
+   * @callback forEachCallback
+   * @param {Node} node
+   * @param {number} index
+   */
+
+  /**
+   * @param  {forEachCallback} callback
    * @return {AVLTree}
    */
-  forEach(fn) {
+  forEach(callback) {
     var current = this._root;
     var s = [], done = false, i = 0;
 
@@ -228,7 +249,7 @@ export default class Tree {
         // empty you are done
         if (s.length > 0) {
           current = s.pop();
-          fn(current, i++);
+          callback(current, i++);
 
           // We have visited the node and its left
           // subtree. Now, it's right subtree's turn
@@ -266,7 +287,7 @@ export default class Tree {
 
   /**
    * Returns `data` fields of all nodes in order.
-   * @return {Array<*>}
+   * @return {Array<Value>}
    */
   values () {
     var current = this._root;
@@ -314,7 +335,7 @@ export default class Tree {
 
   /**
    * Returns node with the minimum key
-   * @return {Node|Null}
+   * @return {?Node}
    */
   minNode () {
     var node = this._root;
@@ -326,7 +347,7 @@ export default class Tree {
 
   /**
    * Returns node with the max key
-   * @return {Node|Null}
+   * @return {?Node}
    */
   maxNode () {
     var node = this._root;
@@ -338,7 +359,7 @@ export default class Tree {
 
   /**
    * Min key
-   * @return {Key}
+   * @return {?Key}
    */
   min () {
     var node = this._root;
@@ -347,9 +368,10 @@ export default class Tree {
     return node.key;
   }
 
+
   /**
    * Max key
-   * @return {Key|Null}
+   * @return {?Key}
    */
   max () {
     var node = this._root;
@@ -360,7 +382,7 @@ export default class Tree {
 
 
   /**
-   * @return {Boolean}
+   * @return {boolean} true/false
    */
   isEmpty() {
     return !this._root;
@@ -369,7 +391,7 @@ export default class Tree {
 
   /**
    * Removes and returns the node with smallest key
-   * @return {Node|Null}
+   * @return {?Node}
    */
   pop () {
     var node = this._root, returnValue = null;
@@ -385,7 +407,7 @@ export default class Tree {
   /**
    * Find node by key
    * @param  {Key} key
-   * @return {Node|Null}
+   * @return {?Node}
    */
   find (key) {
     var root = this._root;
@@ -408,8 +430,8 @@ export default class Tree {
   /**
    * Insert a node into the tree
    * @param  {Key} key
-   * @param  {*}   [data]
-   * @return {Node|Null}
+   * @param  {Value} [data]
+   * @return {?Node}
    */
   insert (key, data) {
     if (!this._root) {
@@ -482,7 +504,7 @@ export default class Tree {
   /**
    * Removes the node from the tree. If not found, returns null.
    * @param  {Key} key
-   * @return {Node:Null}
+   * @return {?Node}
    */
   remove (key) {
     if (!this._root) return null;
@@ -580,9 +602,9 @@ export default class Tree {
 
   /**
    * Bulk-load items
-   * @param  {Array}  keys
-   * @param  {Array}  [values]
-   * @return {Tree}
+   * @param  {Array<Key>}  keys
+   * @param  {Array<Value>}  [values]
+   * @return {AVLTree}
    */
   load(keys = [], values = []) {
     if (Array.isArray(keys)) {
@@ -596,7 +618,7 @@ export default class Tree {
 
   /**
    * Returns true if the tree is balanced
-   * @return {Boolean}
+   * @return {boolean}
    */
   isBalanced() {
     return isBalanced(this._root);
@@ -605,12 +627,11 @@ export default class Tree {
 
   /**
    * String representation of the tree - primitive horizontal print-out
-   * @param  {Function(Node):String} [printNode]
-   * @return {String}
+   * @param  {Function(Node):string} [printNode]
+   * @return {string}
    */
   toString (printNode) {
     return print(this._root, printNode);
   }
-
 }
 

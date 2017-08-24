@@ -1,33 +1,34 @@
-export type Key = any;
-
-export type Node = {
-  parent?:       Node,
-  left?:         Node,
-  right?:        Node,
-  balanceFactor: Number,
+export type Node<Key extends any, Value extends any> = {
+  parent?:       Node<Key, Value>,
+  left?:         Node<Key, Value>,
+  right?:        Node<Key, Value>,
+  balanceFactor: number,
   key?:          Key,
-  data?:         any
+  data?:         Value
 };
+export type Comparator<Key> = (a: Key, b: Key) => number
+export type ForEachCallback<Key, Value> = (node: Node<Key, Value>, index: number) => void
 
-export default class AVLTree {
-  constructor(comparator?: ((a: Key, b: Key) => number));
-  size: Number;
-  insert(key: Key, data?: any): void;
-  remove(key: Key): Node;
-  find(key: Key): Node;
-  contains(key: Key): Boolean;
-  isEmpty(): Boolean;
+export default class AVLTree<Key extends any, Value extends any> {
+  constructor (comparator?: Comparator<Key>, noDuplicates?: boolean);
+  size: number;
+  insert(key: Key, data?: Value): void;
+  remove(key: Key): Node<Key, Value>;
+  find(key: Key): Node<Key, Value>;
+  contains(key: Key): boolean;
+  isEmpty(): boolean;
   keys(): Array<Key>;
-  values(): Array<any>;
-  pop(): Node;
+  values(): Array<Value>;
+  pop(): Node<Key, Value>;
   min(): Key;
   max(): Key;
-  minNode(): Node;
-  maxNode(): Node;
-  forEach(fn:((node: Node) => (any))):AVLTree;
-  load(keys:Array<Key>, values?:Array<any>):AVLTree;
-  prev(node: Node): Node;
-  next(node: Node): Node;
-  isBalanced(): Boolean;
-  toString(): String;
+  minNode(): Node<Key, Value>;
+  maxNode(): Node<Key, Value>;
+  forEach(callback: ForEachCallback<Key, Value>): AVLTree<Key, Value>;
+  load(keys: Array<Key>, values?:Array<Value>): AVLTree<Key, Value>;
+  prev(node: Node<Key, Value>): Node<Key, Value>;
+  next(node: Node<Key, Value>): Node<Key, Value>;
+  isBalanced(): boolean;
+  toString(): string;
+  destroy(): AVLTree<Key, Value>;
 }
