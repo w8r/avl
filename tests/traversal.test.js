@@ -56,6 +56,21 @@ describe('traversal check', () => {
     assert.isNull(tree.next(max));
   });
 
+  it ('should find successor and predecessor for 2-nodes tree', () => {
+    const tree = new Tree();
+    tree.insert(5); tree.insert(10);
+
+    let min = tree.minNode();
+    assert.equal(min.key, 5);
+    assert.isNull(tree.prev(min));
+    assert.equal(tree.next(min).key, 10);
+
+    let max = tree.maxNode();
+    assert.equal(max.key, 10);
+    assert.isNull(tree.next(max));
+    assert.equal(tree.prev(max).key, 5);
+  });
+
   it ('should be able to get a node by its index', () => {
     const tree = new Tree();
     for (let i = 0; i < 10; i++) tree.insert(i);
