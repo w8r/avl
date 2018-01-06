@@ -1,5 +1,5 @@
 /**
- * avl v1.4.0
+ * avl v1.4.1
  * Fast AVL tree for Node and browser
  *
  * @author Alexander Milevski <info@w8r.name>
