@@ -1,6 +1,6 @@
 {
   "name": "avl",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "author": "Alexander Milevski <info@w8r.name>",
   "license": "MIT",
   "description": "Fast AVL tree for Node and browser",
