@@ -652,3 +652,4 @@ export default class AVLTree {
   }
 }
 
+AVLTree.default = AVLTree;

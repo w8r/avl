@@ -726,6 +726,8 @@ AVLTree.prototype.toString = function toString (printNode) {
 
 Object.defineProperties( AVLTree.prototype, prototypeAccessors );
 
+AVLTree.default = AVLTree;
+
 return AVLTree;
 
 })));

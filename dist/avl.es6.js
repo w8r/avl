@@ -720,5 +720,7 @@ class AVLTree {
   }
 }
 
+AVLTree.default = AVLTree;
+
 export default AVLTree;
 //# sourceMappingURL=avl.es6.js.map
