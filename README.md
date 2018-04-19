@@ -44,6 +44,7 @@ Or use the compiled version 'dist/avl.js'.
 * `tree.at(index:Number):Node|Null` - Return node by its index in sorted order of keys
 * `tree.contains(key):Boolean` - Whether a node with the given key is in the tree
 * `tree.forEach(function(node) {...}):Tree` In-order traversal
+* `tree.range(lo, high, function(node) {} [, context]):Tree` - Walks the range of keys in order. Stops, if the visitor function returns a non-zero value.
 * `tree.keys():Array<key>` - Returns the array of keys in order
 * `tree.values():Array<*>` - Returns the array of data fields in order
 * `tree.pop():Node` - Removes smallest node

@@ -1,5 +1,5 @@
 /**
- * avl v1.4.1
+ * avl v1.4.2
  * Fast AVL tree for Node and browser
  *
  * @author Alexander Milevski <info@w8r.name>
@@ -320,6 +320,40 @@ AVLTree.prototype.forEach = function forEach (callback) {
         // subtree. Now, it's right subtree's turn
         current = current.right;
       } else { done = true; }
+    }
+  }
+  return this;
+};
+
+
+/**
+ * Walk key range from `low` to `high`. Stops if `fn` returns a value.
+ * @param{Key}    low
+ * @param{Key}    high
+ * @param{Function} fn
+ * @param{*?}     ctx
+ * @return {SplayTree}
+ */
+AVLTree.prototype.range = function range (low, high, fn, ctx) {
+    var this$1 = this;
+
+  var Q = [];
+  var compare = this._comparator;
+  var node = this._root, cmp;
+
+  while (Q.length !== 0 || node) {
+    if (node) {
+      Q.push(node);
+      node = node.left;
+    } else {
+      node = Q.pop();
+      cmp = compare(node.key, high);
+      if (cmp > 0) {
+        break;
+      } else if (compare(node.key, low) >= 0) {
+        if (fn.call(ctx, node)) { return this$1; } // stop if smth is returned
+      }
+      node = node.right;
     }
   }
   return this;
