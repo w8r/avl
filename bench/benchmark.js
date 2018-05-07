@@ -79,3 +79,19 @@ new Benchmark.Suite(`Remove (x${N})`, options)
     for (let i = N - 1; i; i--) prefilledAVL.remove(values[i]);
   })
   .run();
+
+const M = 10000;
+const arr = new Array(M).fill(0).map((i) => M * Math.random());
+arr.sort((a, b) => a - b);
+new Benchmark.Suite(`Bulk-load (x${M})`, options)
+  .add('1 by 1', () => {
+    const t = new Tree();
+    for (let i = 0; i < M; i++) t.insert(arr[i]);
+  })
+  .add('bulk load', () => {
+    const t = new Tree();
+    const data = arr.slice();
+
+    t.load(data, []);
+  })
+  .run();

@@ -1,5 +1,5 @@
 /**
- * avl v1.4.2
+ * avl v1.4.3
  * Fast AVL tree for Node and browser
  *
  * @author Alexander Milevski <info@w8r.name>
@@ -67,6 +67,59 @@ function isBalanced(root) {
  */
 function height(node) {
   return node ? (1 + Math.max(height(node.left), height(node.right))) : 0;
+}
+
+
+function loadRecursive (parent, keys, values, start, end) {
+  const size = end - start;
+  if (size > 0) {
+    const middle = start + Math.floor(size / 2);
+    const key    = keys[middle];
+    const data   = values[middle];
+    const node   = { key, data, parent };
+    node.left    = loadRecursive(node, keys, values, start, middle);
+    node.right   = loadRecursive(node, keys, values, middle + 1, end);
+    return node;
+  }
+  return null;
+}
+
+
+function markBalance(node) {
+  if (node === null) return 0;
+  const lh = markBalance(node.left);
+  const rh = markBalance(node.right);
+
+  node.balanceFactor = lh - rh;
+  return Math.max(lh, rh) + 1;
+}
+
+
+function sort(keys, values, left, right, compare) {
+  if (left >= right) return;
+
+  // eslint-disable-next-line no-bitwise
+  const pivot = keys[(left + right) >> 1];
+  let i = left - 1;
+  let j = right + 1;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    do i++; while (compare(keys[i], pivot) < 0);
+    do j--; while (compare(keys[j], pivot) > 0);
+    if (i >= j) break;
+
+    let tmp = keys[i];
+    keys[i] = keys[j];
+    keys[j] = tmp;
+
+    tmp = values[i];
+    values[i] = values[j];
+    values[j] = tmp;
+  }
+
+  sort(keys, values,  left,     j, compare);
+  sort(keys, values, j + 1, right, compare);
 }
 
 // function createNode (parent, left, right, height, key, data) {
@@ -208,7 +261,17 @@ class AVLTree {
    * @return {AVLTree}
    */
   destroy() {
+    return this.clear();
+  }
+
+
+  /**
+   * Clear the tree
+   * @return {AVLTree}
+   */
+  clear() {
     this._root = null;
+    this._size = 0;
     return this;
   }
 
@@ -723,12 +786,13 @@ class AVLTree {
    * @param  {Array<Value>}  [values]
    * @return {AVLTree}
    */
-  load(keys = [], values = []) {
-    if (Array.isArray(keys)) {
-      for (var i = 0, len = keys.length; i < len; i++) {
-        this.insert(keys[i], values[i]);
-      }
-    }
+  load(keys = [], values = [], presort) {
+    if (this._size !== 0) throw new Error('bulk-load: tree is not empty');
+    const size = keys.length;
+    if (presort) sort(keys, values, 0, size - 1, this._comparator);
+    this._root = loadRecursive(null, keys, values, 0, size);
+    markBalance(this._root);
+    this._size = size;
     return this;
   }
 

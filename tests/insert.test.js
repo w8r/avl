@@ -89,7 +89,7 @@ describe ('insert', () => {
     const tree = new Tree();
     const keys = [1,2,3,4];
     const values = [4,3,2,1];
-    tree.load(keys, values);
+    tree.load(keys, values, true);
 
     assert.deepEqual(tree.keys(), keys);
     assert.deepEqual(tree.values(), values);
@@ -97,10 +97,22 @@ describe ('insert', () => {
 
   it ('should allow bulk-insert without values', () => {
     const tree = new Tree();
-    const keys = [1,2,3,4];
-    tree.load(keys);
+    const keys = [1, 2, 3, 4, 5, 6, 7, 8];
+    tree.load(keys, undefined, true);
 
     assert.deepEqual(tree.keys(), keys);
     assert.deepEqual(tree.values(), keys.map(k => undefined));
+
+    //assert.isTrue(tree.isBalanced());
+  });
+
+  it ('should mark balance properly after bulk-load', () => {
+    const tree = new Tree();
+    const keys = [1, 2, 3, 4, 5, 6, 7, 8];
+    tree.load(keys, undefined, true);
+
+    //tree.insert(0);
+
+    assert.isTrue(tree.isBalanced());
   });
 });

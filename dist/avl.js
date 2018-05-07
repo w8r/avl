@@ -1,5 +1,5 @@
 /**
- * avl v1.4.2
+ * avl v1.4.3
  * Fast AVL tree for Node and browser
  *
  * @author Alexander Milevski <info@w8r.name>
@@ -75,6 +75,59 @@ function isBalanced(root) {
  */
 function height(node) {
   return node ? (1 + Math.max(height(node.left), height(node.right))) : 0;
+}
+
+
+function loadRecursive (parent, keys, values, start, end) {
+  var size = end - start;
+  if (size > 0) {
+    var middle = start + Math.floor(size / 2);
+    var key    = keys[middle];
+    var data   = values[middle];
+    var node   = { key: key, data: data, parent: parent };
+    node.left    = loadRecursive(node, keys, values, start, middle);
+    node.right   = loadRecursive(node, keys, values, middle + 1, end);
+    return node;
+  }
+  return null;
+}
+
+
+function markBalance(node) {
+  if (node === null) { return 0; }
+  var lh = markBalance(node.left);
+  var rh = markBalance(node.right);
+
+  node.balanceFactor = lh - rh;
+  return Math.max(lh, rh) + 1;
+}
+
+
+function sort(keys, values, left, right, compare) {
+  if (left >= right) { return; }
+
+  // eslint-disable-next-line no-bitwise
+  var pivot = keys[(left + right) >> 1];
+  var i = left - 1;
+  var j = right + 1;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    do { i++; } while (compare(keys[i], pivot) < 0);
+    do { j--; } while (compare(keys[j], pivot) > 0);
+    if (i >= j) { break; }
+
+    var tmp = keys[i];
+    keys[i] = keys[j];
+    keys[j] = tmp;
+
+    tmp = values[i];
+    values[i] = values[j];
+    values[j] = tmp;
+  }
+
+  sort(keys, values,  left,     j, compare);
+  sort(keys, values, j + 1, right, compare);
 }
 
 // function createNode (parent, left, right, height, key, data) {
@@ -205,7 +258,17 @@ var prototypeAccessors = { size: {} };
  * @return {AVLTree}
  */
 AVLTree.prototype.destroy = function destroy () {
+  return this.clear();
+};
+
+
+/**
+ * Clear the tree
+ * @return {AVLTree}
+ */
+AVLTree.prototype.clear = function clear () {
   this._root = null;
+  this._size = 0;
   return this;
 };
 
@@ -726,16 +789,16 @@ AVLTree.prototype.remove = function remove (key) {
  * @param{Array<Value>}[values]
  * @return {AVLTree}
  */
-AVLTree.prototype.load = function load (keys, values) {
-    var this$1 = this;
+AVLTree.prototype.load = function load (keys, values, presort) {
     if ( keys === void 0 ) keys = [];
     if ( values === void 0 ) values = [];
 
-  if (Array.isArray(keys)) {
-    for (var i = 0, len = keys.length; i < len; i++) {
-      this$1.insert(keys[i], values[i]);
-    }
-  }
+  if (this._size !== 0) { throw new Error('bulk-load: tree is not empty'); }
+  var size = keys.length;
+  if (presort) { sort(keys, values, 0, size - 1, this._comparator); }
+  this._root = loadRecursive(null, keys, values, 0, size);
+  markBalance(this._root);
+  this._size = size;
   return this;
 };
 

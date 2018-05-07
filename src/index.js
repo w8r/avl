@@ -1,4 +1,4 @@
-import { print, isBalanced } from './utils';
+import { print, isBalanced, loadRecursive, markBalance, sort } from './utils';
 
 
 // function createNode (parent, left, right, height, key, data) {
@@ -140,7 +140,17 @@ export default class AVLTree {
    * @return {AVLTree}
    */
   destroy() {
+    return this.clear();
+  }
+
+
+  /**
+   * Clear the tree
+   * @return {AVLTree}
+   */
+  clear() {
     this._root = null;
+    this._size = 0;
     return this;
   }
 
@@ -655,12 +665,13 @@ export default class AVLTree {
    * @param  {Array<Value>}  [values]
    * @return {AVLTree}
    */
-  load(keys = [], values = []) {
-    if (Array.isArray(keys)) {
-      for (var i = 0, len = keys.length; i < len; i++) {
-        this.insert(keys[i], values[i]);
-      }
-    }
+  load(keys = [], values = [], presort) {
+    if (this._size !== 0) throw new Error('bulk-load: tree is not empty');
+    const size = keys.length;
+    if (presort) sort(keys, values, 0, size - 1, this._comparator);
+    this._root = loadRecursive(null, keys, values, 0, size);
+    markBalance(this._root);
+    this._size = size;
     return this;
   }
 

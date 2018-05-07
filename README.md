@@ -55,6 +55,7 @@ Or use the compiled version 'dist/avl.js'.
 * `tree.prev(node):Node` - Predecessor node
 * `tree.next(node):Node` - Successor node
 * `tree.load(keys:Array<*>, [values:Array<*>]):Tree` - Bulk-load items
+* `tree.destroy():Tree, tree.clear():Tree` - Empty the tree
 
 **Comparator**
 

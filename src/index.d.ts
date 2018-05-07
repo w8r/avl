@@ -34,4 +34,5 @@ export default class AVLTree<Key extends any, Value extends any> {
   isBalanced(): boolean;
   toString(): string;
   destroy(): AVLTree<Key, Value>;
+  clear(): AVLTree<Key, Value>;
 }

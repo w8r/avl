@@ -53,7 +53,7 @@ describe('Keys and values', () => {
 
   it ('should return sorted values after bulk insert', () => {
     const t = new Tree();
-    t.load([5, -10, 0, 33, 2], ['D', 'A', 'B', 'E', 'C']);
+    t.load([5, -10, 0, 33, 2], ['D', 'A', 'B', 'E', 'C'], true);
 
     assert.deepEqual(t.keys(), [-10, 0, 2, 5, 33]);
     assert.deepEqual(t.values(), ['A', 'B', 'C', 'D', 'E']);

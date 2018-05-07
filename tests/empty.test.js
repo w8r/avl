@@ -14,4 +14,16 @@ describe ('empty check', () => {
     tree.remove(1);
     assert.isTrue(tree.isEmpty());
   });
+
+  it ('should clear the tree', () => {
+    const tree = new Tree();
+    tree.insert(1);
+    tree.insert(2);
+    tree.insert(3);
+    tree.insert(4);
+
+    tree.clear();
+    assert.isTrue(tree.isEmpty());
+    assert.equal(tree.size, 0);
+  });
 });
