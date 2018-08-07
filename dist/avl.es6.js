@@ -316,7 +316,9 @@ class AVLTree {
     if (successor) {
       if (successor.right) {
         successor = successor.right;
-        while (successor && successor.left) successor = successor.left;
+        if (successor) {
+          while (successor.left) successor = successor.left;
+        }
       } else {
         successor = node.parent;
         while (successor && successor.right === node) {
@@ -338,7 +340,9 @@ class AVLTree {
     if (predecessor) {
       if (predecessor.left) {
         predecessor = predecessor.left;
-        while (predecessor && predecessor.right) predecessor = predecessor.right;
+        if (predecessor) {
+          while (predecessor.right) predecessor = predecessor.right;
+        }
       } else {
         predecessor = node.parent;
         while (predecessor && predecessor.left === node) {
