@@ -200,10 +200,8 @@ export default class AVLTree {
         }
       } else {
         successor = node.parent;
-        if (successor) {
-          while (successor.right === node) {
-            node = successor; successor = successor.parent;
-          }
+        while (successor && successor.right === node) {
+          node = successor; successor = successor.parent;
         }
       }
     }
@@ -226,11 +224,9 @@ export default class AVLTree {
         }
       } else {
         predecessor = node.parent;
-        if (predecessor) {
-          while (predecessor.left === node) {
-            node = predecessor;
-            predecessor = predecessor.parent;
-          }
+        while (predecessor && predecessor.left === node) {
+          node = predecessor;
+          predecessor = predecessor.parent;
         }
       }
     }
