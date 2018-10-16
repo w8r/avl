@@ -48,6 +48,7 @@ Or use the compiled version 'dist/avl.js'.
 * `tree.keys():Array<key>` - Returns the array of keys in order
 * `tree.values():Array<*>` - Returns the array of data fields in order
 * `tree.pop():Node` - Removes smallest node
+* `tree.popMax():Node` - Removes highest node
 * `tree.min():key` - Returns min key
 * `tree.max():key` - Returns max key
 * `tree.minNode():Node` - Returns the node with smallest key
