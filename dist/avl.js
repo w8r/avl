@@ -573,6 +573,21 @@
 
 
   /**
+   * Removes and returns the node with highest key
+   * @return {?Node}
+   */
+  AVLTree.prototype.popMax = function popMax () {
+    var node = this._root, returnValue = null;
+    if (node) {
+      while (node.right) { node = node.right; }
+      returnValue = { key: node.key, data: node.data };
+      this.remove(node.key);
+    }
+    return returnValue;
+  };
+
+
+  /**
    * Find node by key
    * @param{Key} key
    * @return {?Node}

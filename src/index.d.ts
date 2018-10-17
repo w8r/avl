@@ -22,6 +22,7 @@ export default class AVLTree<Key extends any, Value extends any> {
   keys(): Array<Key>;
   values(): Array<Value>;
   pop(): Node<Key, Value>;
+  popMax(): Node<Key, Value>;
   min(): Key;
   max(): Key;
   minNode(): Node<Key, Value>;
