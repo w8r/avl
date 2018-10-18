@@ -130,6 +130,15 @@
     sort(keys, values, j + 1, right, compare);
   }
 
+  async function whilst (next, iteratee) {
+    var i = 0, n;
+    // eslint-disable-next-line no-cond-assign
+    while ((n = next()) !== undefined) {
+      // eslint-disable-next-line no-await-in-loop
+      await iteratee(n, i++);
+    }
+  }
+
   // function createNode (parent, left, right, height, key, data) {
   //   return { parent, left, right, balanceFactor: height, key, data };
   // }
@@ -388,6 +397,44 @@
     return this;
   };
 
+  /**
+   * @param{forEachCallback} callback
+   * @return {Promise}
+   */
+  AVLTree.prototype.asyncForEach = function asyncForEach (callback) {
+    var minNode = this.minNode();
+    var node;
+    var next = this.next.bind(this);
+    var iterate = function () { node = node ? next(node) : minNode; return node; };
+    return whilst(iterate, callback);
+  };
+
+  AVLTree.prototype.asyncRange = function asyncRange (low, high, fn, ctx) {
+    var lowNode = this.at(low);
+    var highNode = this.at(high);
+    var done = false;
+    var node;
+    var next = this.next.bind(this);
+
+    var callback = async function (node) {
+      done = await fn(node, ctx);
+    };
+
+    var iterate = function () {
+      if (done) {
+        return undefined;
+      }
+      if (node === highNode) {
+        return undefined;
+      } else if (node === undefined) {
+        node = lowNode;
+      } else {
+        node = next(node);
+      }
+      return node;
+    };
+    return whilst(iterate, callback);
+  };
 
   /**
    * Walk key range from `low` to `high`. Stops if `fn` returns a value.

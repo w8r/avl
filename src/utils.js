@@ -113,3 +113,12 @@ export function sort(keys, values, left, right, compare) {
   sort(keys, values,  left,     j, compare);
   sort(keys, values, j + 1, right, compare);
 }
+
+export async function whilst (next, iteratee) {
+  let i = 0, n;
+  // eslint-disable-next-line no-cond-assign
+  while ((n = next()) !== undefined) {
+    // eslint-disable-next-line no-await-in-loop
+    await iteratee(n, i++);
+  }
+}
