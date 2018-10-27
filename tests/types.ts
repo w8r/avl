@@ -3,11 +3,11 @@ import { Node } from '../'
 
 function main() {
   const t = new AVLTree<number, number>()
-  t.insert(5)
-  t.insert(-10)
-  t.insert(0)
-  t.insert(33)
-  t.insert(2)
+  t.insert(5, 5)
+  t.insert(-10, -10)
+  t.insert(0, 0)
+  t.insert(33, 33)
+  t.insert(2, 2)
 
   // Assert Type
   const keys: number[] = t.keys() // [-10, 0, 2, 5, 33]
@@ -17,7 +17,7 @@ function main() {
   const max: number = t.max()  // -33
 
   t.destroy()
-  t.remove(0)
+  t.remove(0, 0)
   t.size   // 4
 
   t.forEach((node, index) => {

@@ -1,5 +1,5 @@
 /**
- * avl v1.4.4
+ * @nesto-software/avl v1.4.4
  * Fast AVL tree for Node and browser
  *
  * @author Alexander Milevski <info@w8r.name>
@@ -701,17 +701,53 @@
      * @param  {Key} key
      * @return {?Node}
      */
-    remove (key) {
+    remove (key, value) {
       if (!this._root) return null;
 
       var node = this._root;
       var compare = this._comparator;
       var cmp = 0;
 
+      outer:
       while (node) {
         cmp = compare(key, node.key);
-        if      (cmp === 0) break;
-        else if (cmp < 0)   node = node.left;
+        if (cmp === 0) {
+          // if we want to find a specific node, but there are duplicate keys
+          // we must search the whole tree for the node
+          if (value !== undefined && value !== node.data) {
+            // we create a stack of currently examined nodes, starting from the parent
+            var currentStartingNode = node.parent;
+
+            // if there is no parent, we are effectively the root, so take that instead
+            if (!currentStartingNode) currentStartingNode = node;
+
+            var stack = [];
+            if (node.left) stack.push(currentStartingNode.left);
+            if (node.right) stack.push(currentStartingNode.right);
+            var index = 0;
+            while (index < stack.length) {
+              var currentElement = stack[index];
+
+              // check if currentElement is the one we search for
+              var currentElementCmp = compare(key, currentElement.key);
+
+              if (currentElementCmp === 0 && value === currentElement.data) {
+                node = currentElement;
+                break outer;
+              }
+
+              // add the children to the stack
+              if (currentElement.left) stack.push(currentElement.left);
+              if (currentElement.right) stack.push(currentElement.right);
+
+              index++;
+            }
+            node = null;
+            break;
+          } else {
+            break;
+          }
+        } else if (cmp < 0)   node = node.left;
         else                node = node.right;
       }
       if (!node) return null;

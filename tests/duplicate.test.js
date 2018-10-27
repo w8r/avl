@@ -83,4 +83,35 @@ describe('Duplicate keys', () => {
     assert.isTrue(tree.isBalanced());
   });
 
+  it ('should remove from a tree with duplicate keys correctly if a specific node.data should be removed', (done) => {
+    const tree = new Tree();
+    const values = [2, 12, 1, 1, -6, 1, 1];
+
+    values.forEach((v) => tree.insert(v));
+
+    var obj = { "test": 1 };
+    tree.insert(1, obj);
+
+    // add some padding at the end, so the element in question is not the last inserted element
+    values.forEach((v) => tree.insert(v));
+
+    // remove the element by data attribute and key
+    tree.remove(1, obj);
+
+    // loop through the tree and look for the element to be removed
+    // note: contains does not work, as it does operate on the key only
+    for(var i = 0; i < tree.size; i++) {
+      var cElement = tree.at(i);
+      if(cElement.data) {
+        done(new Error("The tree should not contain a node with a data attribute."));
+        return;
+      }
+    }
+
+    assert.isTrue(tree.contains(1));
+    assert.equal(tree.size, 14);
+    assert.isTrue(tree.isBalanced());
+    done();
+  });
+
 });
