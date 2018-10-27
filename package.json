@@ -54,5 +54,8 @@
     "avl",
     "balanced-search-tree"
   ],
-  "dependencies": {}
+  "dependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
 }
