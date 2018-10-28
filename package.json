@@ -1,5 +1,5 @@
 {
-  "name": "@nesto-software/avl",
+  "name": "avl",
   "version": "1.4.4",
   "author": "Alexander Milevski <info@w8r.name>",
   "license": "MIT",
@@ -45,7 +45,7 @@
     "rollup": "^0.65.2",
     "rollup-plugin-buble": "^0.19.2",
     "typescript": "^3.0.3",
-    "nodemon": "*"
+    "nodemon": "^1.18.5"
   },
   "keywords": [
     "binary-tree",
@@ -53,9 +53,5 @@
     "avl-tree",
     "avl",
     "balanced-search-tree"
-  ],
-  "dependencies": {},
-  "publishConfig": {
-    "access": "public"
-  }
+  ]
 }
