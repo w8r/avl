@@ -588,30 +588,32 @@ export default class AVLTree {
         // if we want to find a specific node, but there are duplicate keys
         // we must search the whole tree for the node
         if (value !== undefined && value !== node.data) {
-          // we create a stack of currently examined nodes, starting from the parent
+          // we create a queue of currently examined nodes, starting from the parent
           var currentStartingNode = node.parent;
 
           // if there is no parent, we are effectively the root, so take that instead
           if (!currentStartingNode) currentStartingNode = node;
 
-          var stack = [];
-          if (node.left) stack.push(currentStartingNode.left);
-          if (node.right) stack.push(currentStartingNode.right);
-          var index = 0;
-          while (index < stack.length) {
-            var currentElement = stack[index];
+          var queue = [];
+          var index = 0;  // the index of the currently examined element in the queue
 
-            // check if currentElement is the one we search for
+          // add the starting node's children into the queue
+          if (node.left) queue.push(currentStartingNode.left);
+          if (node.right) queue.push(currentStartingNode.right);
+
+          while (index < queue.length) {
+            var currentElement = queue[index];
             var currentElementCmp = compare(key, currentElement.key);
 
+            // check if currentElement is the one we search for
             if (currentElementCmp === 0 && value === currentElement.data) {
               node = currentElement;
               break outer;
             }
 
-            // add the children to the stack
-            if (currentElement.left) stack.push(currentElement.left);
-            if (currentElement.right) stack.push(currentElement.right);
+            // add the children of the currently examined element into the queue
+            if (currentElement.left) queue.push(currentElement.left);
+            if (currentElement.right) queue.push(currentElement.right);
 
             index++;
           }
