@@ -598,8 +598,8 @@ export default class AVLTree {
           var index = 0;  // the index of the currently examined element in the queue
 
           // add the starting node's children into the queue
-          if (node.left) queue.push(currentStartingNode.left);
-          if (node.right) queue.push(currentStartingNode.right);
+          if (currentStartingNode.left) queue.push(currentStartingNode.left);
+          if (currentStartingNode.right) queue.push(currentStartingNode.right);
 
           while (index < queue.length) {
             var currentElement = queue[index];
