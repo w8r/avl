@@ -14,7 +14,7 @@ export default class AVLTree<Key extends any, Value extends any> {
   constructor (comparator?: Comparator<Key>, noDuplicates?: boolean);
   size: number;
   insert(key: Key, data?: Value): void;
-  remove(key: Key): Node<Key, Value>;
+  remove(key: Key, data?: Value): Node<Key, Value>;
   find(key: Key): Node<Key, Value>;
   at(index: number): Node<Key, Value>;
   contains(key: Key): boolean;

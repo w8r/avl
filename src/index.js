@@ -574,17 +574,55 @@ export default class AVLTree {
    * @param  {Key} key
    * @return {?Node}
    */
-  remove (key) {
+  remove (key, value) {
     if (!this._root) return null;
 
     var node = this._root;
     var compare = this._comparator;
     var cmp = 0;
 
+    outer:
     while (node) {
       cmp = compare(key, node.key);
-      if      (cmp === 0) break;
-      else if (cmp < 0)   node = node.left;
+      if (cmp === 0) {
+        // if we want to find a specific node, but there are duplicate keys
+        // we must search the whole tree for the node
+        if (value !== undefined && value !== node.data) {
+          // we create a queue of currently examined nodes, starting from the parent
+          var currentStartingNode = node.parent;
+
+          // if there is no parent, we are effectively the root, so take that instead
+          if (!currentStartingNode) currentStartingNode = node;
+
+          var queue = [];
+          var index = 0;  // the index of the currently examined element in the queue
+
+          // add the starting node's children into the queue
+          if (currentStartingNode.left) queue.push(currentStartingNode.left);
+          if (currentStartingNode.right) queue.push(currentStartingNode.right);
+
+          while (index < queue.length) {
+            var currentElement = queue[index];
+            var currentElementCmp = compare(key, currentElement.key);
+
+            // check if currentElement is the one we search for
+            if (currentElementCmp === 0 && value === currentElement.data) {
+              node = currentElement;
+              break outer;
+            }
+
+            // add the children of the currently examined element into the queue
+            if (currentElement.left) queue.push(currentElement.left);
+            if (currentElement.right) queue.push(currentElement.right);
+
+            index++;
+          }
+          node = null;
+          break;
+        } else {
+          break;
+        }
+      } else if (cmp < 0)   node = node.left;
       else                node = node.right;
     }
     if (!node) return null;
