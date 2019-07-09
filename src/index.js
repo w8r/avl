@@ -1,4 +1,4 @@
-import { print, isBalanced, loadRecursive, markBalance, sort } from './utils';
+import { print, isBalanced, loadRecursive, markBalance, sort, whilst } from './utils';
 
 
 // function createNode (parent, left, right, height, key, data) {
@@ -270,6 +270,17 @@ export default class AVLTree {
     return this;
   }
 
+  /**
+   * @param  {forEachCallback} callback
+   * @return {Promise}
+   */
+  asyncForEach (callback) {
+    const minNode = this.minNode();
+    let node;
+    const next = this.next.bind(this);
+    const iterate = () => { node = node ? next(node) : minNode; return node; };
+    return whilst(iterate, callback);
+  }
 
   /**
    * Walk key range from `low` to `high`. Stops if `fn` returns a value.

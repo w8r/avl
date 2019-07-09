@@ -128,6 +128,15 @@
     sort(keys, values, j + 1, right, compare);
   }
 
+  async function whilst (next, iteratee) {
+    let i = 0, n;
+    // eslint-disable-next-line no-cond-assign
+    while ((n = next()) !== undefined) {
+      // eslint-disable-next-line no-await-in-loop
+      await iteratee(n, i++);
+    }
+  }
+
   // function createNode (parent, left, right, height, key, data) {
   //   return { parent, left, right, balanceFactor: height, key, data };
   // }
@@ -397,6 +406,44 @@
       return this;
     }
 
+    /**
+     * @param  {forEachCallback} callback
+     * @return {Promise}
+     */
+    asyncForEach (callback) {
+      const minNode = this.minNode();
+      let node;
+      const next = this.next.bind(this);
+      const iterate = () => { node = node ? next(node) : minNode; return node; };
+      return whilst(iterate, callback);
+    }
+
+    asyncRange (low, high, fn, ctx) {
+      const lowNode = this.at(low);
+      const highNode = this.at(high);
+      let done = false;
+      let node;
+      const next = this.next.bind(this);
+
+      const callback = async function (node) {
+        done = await fn(node, ctx);
+      };
+
+      const iterate = () => {
+        if (done) {
+          return undefined;
+        }
+        if (node === highNode) {
+          return undefined;
+        } else if (node === undefined) {
+          node = lowNode;
+        } else {
+          node = next(node);
+        }
+        return node;
+      };
+      return whilst(iterate, callback);
+    }
 
     /**
      * Walk key range from `low` to `high`. Stops if `fn` returns a value.

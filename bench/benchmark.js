@@ -95,3 +95,16 @@ new Benchmark.Suite(`Bulk-load (x${M})`, options)
     t.load(data, []);
   })
   .run();
+
+new Benchmark.Suite(`Traverse (x${N})`, options)
+  .add('AVL (forEach)', () => {
+    let count = 0;
+    prefilledAVL.forEach(node => count += node.key);
+  })
+  .add('AVL (asyncForEach)', (deferred) => {
+    let count = 0;
+    const promise = prefilledAVL.asyncForEach(node => count += node.key)
+    promise.then(() => deferred.resolve());
+  }, {'defer': true})
+  .run();
+  
