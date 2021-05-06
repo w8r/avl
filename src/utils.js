@@ -1,4 +1,3 @@
-
 /**
  * Prints tree horizontally
  * @param  {Node}                       root
@@ -27,7 +26,6 @@ function row (root, prefix, isTail, out, printNode) {
     if (root.right) row(root.right, indent, true,  out, printNode);
   }
 }
-
 
 /**
  * Is the tree balanced (none of the subtrees differ in height by more than 1)
@@ -61,7 +59,6 @@ function height(node) {
   return node ? (1 + Math.max(height(node.left), height(node.right))) : 0;
 }
 
-
 export function loadRecursive (parent, keys, values, start, end) {
   const size = end - start;
   if (size > 0) {
@@ -76,7 +73,6 @@ export function loadRecursive (parent, keys, values, start, end) {
   return null;
 }
 
-
 export function markBalance(node) {
   if (node === null) return 0;
   const lh = markBalance(node.left);
@@ -85,7 +81,6 @@ export function markBalance(node) {
   node.balanceFactor = lh - rh;
   return Math.max(lh, rh) + 1;
 }
-
 
 export function sort(keys, values, left, right, compare) {
   if (left >= right) return;

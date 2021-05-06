@@ -1,6 +1,5 @@
 import { print, isBalanced, loadRecursive, markBalance, sort } from './utils';
 
-
 // function createNode (parent, left, right, height, key, data) {
 //   return { parent, left, right, balanceFactor: height, key, data };
 // }
@@ -31,7 +30,6 @@ import { print, isBalanced, loadRecursive, markBalance, sort } from './utils';
  * @returns {number}
  */
 function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
-
 
 /**
  * Single left rotation
@@ -68,7 +66,6 @@ function rotateLeft (node) {
   return rightNode;
 }
 
-
 function rotateRight (node) {
   var leftNode = node.left;
   node.left = leftNode.right;
@@ -99,18 +96,15 @@ function rotateRight (node) {
   return leftNode;
 }
 
-
 // function leftBalance (node) {
 //   if (node.left.balanceFactor === -1) rotateLeft(node.left);
 //   return rotateRight(node);
 // }
 
-
 // function rightBalance (node) {
 //   if (node.right.balanceFactor === 1) rotateRight(node.right);
 //   return rotateLeft(node);
 // }
-
 
 export default class AVLTree {
   /**
@@ -134,7 +128,6 @@ export default class AVLTree {
     this._noDuplicates = !!noDuplicates;
   }
 
-
   /**
    * Clear the tree
    * @return {AVLTree}
@@ -142,7 +135,6 @@ export default class AVLTree {
   destroy() {
     return this.clear();
   }
-
 
   /**
    * Clear the tree
@@ -162,7 +154,6 @@ export default class AVLTree {
     return this._size;
   }
 
-
   /**
    * Whether the tree contains a node with the given key
    * @param  {Key} key
@@ -181,7 +172,6 @@ export default class AVLTree {
     }
     return false;
   }
-
 
   /* eslint-disable class-methods-use-this */
 
@@ -206,7 +196,6 @@ export default class AVLTree {
     return successor;
   }
 
-
   /**
    * Predecessor node
    * @param  {Node} node
@@ -229,7 +218,6 @@ export default class AVLTree {
     return predecessor;
   }
   /* eslint-enable class-methods-use-this */
-
 
   /**
    * Callback for forEach
@@ -270,7 +258,6 @@ export default class AVLTree {
     return this;
   }
 
-
   /**
    * Walk key range from `low` to `high`. Stops if `fn` returns a value.
    * @param  {Key}      low
@@ -302,7 +289,6 @@ export default class AVLTree {
     return this;
   }
 
-
   /**
    * Returns all keys in order
    * @return {Array<Key>}
@@ -326,7 +312,6 @@ export default class AVLTree {
     return r;
   }
 
-
   /**
    * Returns `data` fields of all nodes in order.
    * @return {Array<Value>}
@@ -349,7 +334,6 @@ export default class AVLTree {
     }
     return r;
   }
-
 
   /**
    * Returns node at given index
@@ -380,7 +364,6 @@ export default class AVLTree {
     return null;
   }
 
-
   /**
    * Returns node with the minimum key
    * @return {?Node}
@@ -391,7 +374,6 @@ export default class AVLTree {
     while (node.left) node = node.left;
     return node;
   }
-
 
   /**
    * Returns node with the max key
@@ -404,7 +386,6 @@ export default class AVLTree {
     return node;
   }
 
-
   /**
    * Min key
    * @return {?Key}
@@ -415,7 +396,6 @@ export default class AVLTree {
     while (node.left) node = node.left;
     return node.key;
   }
-
 
   /**
    * Max key
@@ -428,14 +408,12 @@ export default class AVLTree {
     return node.key;
   }
 
-
   /**
    * @return {boolean} true/false
    */
   isEmpty() {
     return !this._root;
   }
-
 
   /**
    * Removes and returns the node with smallest key
@@ -451,7 +429,6 @@ export default class AVLTree {
     return returnValue;
   }
 
-
   /**
    * Removes and returns the node with highest key
    * @return {?Node}
@@ -465,7 +442,6 @@ export default class AVLTree {
     }
     return returnValue;
   }
-
 
   /**
    * Find node by key
@@ -488,7 +464,6 @@ export default class AVLTree {
 
     return null;
   }
-
 
   /**
    * Insert a node into the tree
@@ -567,7 +542,6 @@ export default class AVLTree {
     this._size++;
     return newNode;
   }
-
 
   /**
    * Removes the node from the tree. If not found, returns null.
@@ -673,7 +647,6 @@ export default class AVLTree {
     return returnValue;
   }
 
-
   /**
    * Bulk-load items
    * @param  {Array<Key>}  keys
@@ -690,7 +663,6 @@ export default class AVLTree {
     return this;
   }
 
-
   /**
    * Returns true if the tree is balanced
    * @return {boolean}
@@ -698,7 +670,6 @@ export default class AVLTree {
   isBalanced() {
     return isBalanced(this._root);
   }
-
 
   /**
    * String representation of the tree - primitive horizontal print-out
