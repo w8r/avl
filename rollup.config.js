@@ -23,7 +23,7 @@ export default [{
     name, banner,
     sourcemap: true,
   },
-  plugins: [ buble() ]
+  plugins: [buble()]
 }, {
   input: 'src/index.js',
   output: {
