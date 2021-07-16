@@ -29,7 +29,7 @@ export default class AVLTree<Key extends any, Value extends any> {
   maxNode(): Node<Key, Value>;
   forEach(callback: ForEachCallback<Key, Value>): AVLTree<Key, Value>;
   range(minKey: Key, maxKey: Key, visit: TraverseCallback<Key, Value>, context?: any): AVLTree<Key, Value>;
-  load(keys: Array<Key>, values?: Array<Value>): AVLTree<Key, Value>;
+  load(keys: Array<Key>, values?: Array<Value>, presort?: boolean): AVLTree<Key, Value>;
   prev(node: Node<Key, Value>): Node<Key, Value>;
   next(node: Node<Key, Value>): Node<Key, Value>;
   isBalanced(): boolean;
