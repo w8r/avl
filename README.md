@@ -55,7 +55,7 @@ Or use the compiled version 'dist/avl.js'.
 * `tree.maxNode():Node` - Returns the node with highest key
 * `tree.prev(node):Node` - Predecessor node
 * `tree.next(node):Node` - Successor node
-* `tree.load(keys:Array<*>, [values:Array<*>]):Tree` - Bulk-load items
+* `tree.load(keys:Array<*>, [values:Array<*>], presort = false):Tree` - Bulk-load items
 * `tree.destroy():Tree, tree.clear():Tree` - Empty the tree
 
 **Comparator**
@@ -123,7 +123,7 @@ console.log(t.keys()); // [33, 5, 2, 0, -10]
 import Tree from 'avl';
 
 const t = new Tree();
-t.load([3,2,-10,20], ['C', 'B', 'A', 'D']);
+t.load([3,2,-10,20], ['C', 'B', 'A', 'D'], true);
 console.log(t.keys());   // [-10, 2, 3, 20]
 console.log(t.values()); // ['A', 'B', 'C', 'D']
 ```
