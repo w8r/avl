@@ -20,7 +20,7 @@
     "prebuild": "npm run lint",
     "lint": "eslint src",
     "build": "rollup -c && npm run types",
-    "types": "tsc src/index.d.ts tests/types.ts",
+    "types": "tsc --strict src/index.d.ts",
     "prebenchmark": "npm run build",
     "benchmark": "node bench/benchmark.js",
     "start": "npm run test:watch",
