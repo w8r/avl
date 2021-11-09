@@ -1,0 +1,19 @@
+env:
+  es2020: true
+
+ignorePatterns:
+  - dist
+  - bench
+
+extends:
+  - plugin:@foxglove/base
+  - plugin:@foxglove/jest
+
+overrides:
+  - files: ["*.ts", "*.tsx"]
+    extends:
+      - plugin:@foxglove/typescript
+    parserOptions:
+      project: ./tsconfig.json
+    rules:
+      "@foxglove/no-boolean-parameters": off

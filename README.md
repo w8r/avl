@@ -1,6 +1,6 @@
 # AVL tree [![npm version](https://badge.fury.io/js/avl.svg)](https://badge.fury.io/js/avl) 
 
-[AVL-tree](https://en.wikipedia.org/wiki/AVL_tree): **[fast](#benchmarks)**(non-recursive) and **simple**(< 500 lines of code)
+[AVL-tree](https://en.wikipedia.org/wiki/AVL_tree): **[fast](#benchmarks)**(non-recursive) and **simple**(< 800 lines of code)
 
 ![AVL-tree](https://upload.wikimedia.org/wikipedia/commons/a/ad/AVL-tree-wBalance_K.svg)
 
@@ -15,7 +15,7 @@
 ## Install
 
 ```shell
-npm i -S avl
+yarn add avl
 ```
 
 ```js
@@ -35,103 +35,40 @@ Or use the compiled version 'dist/avl.js'.
 
 [Try it in your browser](https://npm.runkit.com/avl)
 
-## API
+## Usage
 
-* `new AVLTree([comparator], [noDuplicates:Boolean])`, where `compare` is optional comparison function
-* `tree.insert(key:any, [data:any])` - Insert item
-* `tree.remove(key:any)` - Remove item
-* `tree.find(key):Node|Null` - Return node by its key
-* `tree.at(index:Number):Node|Null` - Return node by its index in sorted order of keys
-* `tree.contains(key):Boolean` - Whether a node with the given key is in the tree
-* `tree.forEach(function(node) {...}):Tree` In-order traversal
-* `tree.range(lo, high, function(node) {} [, context]):Tree` - Walks the range of keys in order. Stops, if the visitor function returns a non-zero value.
-* `tree.keys():Array<key>` - Returns the array of keys in order
-* `tree.values():Array<*>` - Returns the array of data fields in order
-* `tree.pop():Node` - Removes smallest node
-* `tree.popMax():Node` - Removes highest node
-* `tree.min():key` - Returns min key
-* `tree.max():key` - Returns max key
-* `tree.minNode():Node` - Returns the node with smallest key
-* `tree.maxNode():Node` - Returns the node with highest key
-* `tree.prev(node):Node` - Predecessor node
-* `tree.next(node):Node` - Successor node
-* `tree.load(keys:Array<*>, [values:Array<*>], presort = false):Tree` - Bulk-load items
-* `tree.destroy():Tree, tree.clear():Tree` - Empty the tree
+```Typescript
+import { AVLTree } from "@foxglove/avl";
 
-**Comparator**
+const tree = new AVLTree<number, string>();
+tree.set(0, "zero");
+tree.set(1, "1");
+tree.set(1, "one");
+tree.set(3, "three");
+tree.set(2, "two");
+tree.delete(0);
+console.log(tree.has(0)); // false
+console.log(tree.get(1)); // "one"
+console.log(tree.size); // 3
+console.log(tree.minEntry()); // [1, "one"]
+console.log(tree.maxEntry()); // [3, "three"]
+console.log(tree.findLessThan(2)); // [1, "one"]
+console.log(tree.findGreaterThanOrEqual(2)); // [2, "two"]
+tree.forEach((value, key) => console.log(value)); // "one" "two" "three"
+tree.range(2, 3, (value, key) => console.log(value)); // "two" "three"
+console.log(tree.pop()); // [3, "three"]
+console.log(tree.shift()); // [1, "one"]
+tree.clear();
 
-`function(a:key,b:key):Number` - Comparator function between two keys, it returns
- * `0` if the keys are equal
- * `<0` if `a < b`
- * `>0` if `a > b`
-
- The comparator function is extremely important, in case of errors you might end
- up with a wrongly constructed tree or would not be able to retrieve your items.
- It is crucial to test the return values of your `comparator(a,b)` and `comparator(b,a)`
- to make sure it's working correctly, otherwise you may have bugs that are very
- unpredictable and hard to catch.
-
- **Duplicate keys**
-
- By default, tree allows duplicate keys. You can disable that by passing `true`
- as a second parameter to the tree constructor. In that case if you would try to
- instert an item with the key, that is already present in the tree, it will not
- be inserted.
- However, the default behavior allows for duplicate keys, cause there are cases
- where you cannot predict that the keys would be unique (example: overlapping
- points in 2D).
-
-## Example
-
-```js
-import Tree from 'avl';
-
-const t = new Tree();
-t.insert(5);
-t.insert(-10);
-t.insert(0);
-t.insert(33);
-t.insert(2);
-
-console.log(t.keys()); // [-10, 0, 2, 5, 33]
-console.log(t.size);   // 5
-console.log(t.min());  // -10
-console.log(t.max());  // -33
-
-t.remove(0);
-console.log(t.size);   // 4
-```
-
-**Custom comparator (reverse sort)**
-
-```js
-import Tree from 'avl';
-
-const t = new Tree((a, b) => b - a);
-t.insert(5);
-t.insert(-10);
-t.insert(0);
-t.insert(33);
-t.insert(2);
-
-console.log(t.keys()); // [33, 5, 2, 0, -10]
-```
-
-**Bulk insert**
-
-```js
-import Tree from 'avl';
-
-const t = new Tree();
-t.load([3,2,-10,20], ['C', 'B', 'A', 'D'], true);
-console.log(t.keys());   // [-10, 2, 3, 20]
-console.log(t.values()); // ['A', 'B', 'C', 'D']
+// Use a custom comparator for non-Number keys
+const bigintTree = new AVLTree<bigint, string>((a, b) => Number(a - b));
+bigintTree.set(1n, "one");
 ```
 
 ## Benchmarks
 
 ```shell
-npm run benchmark
+yarn benchmark
 ```
 
 ```
@@ -164,9 +101,8 @@ plays the role of straight-forward robust implementation.
 ## Develop
 
 ```shell
-npm i
-npm t
-npm run build
+yarn
+yarn build
 ```
 
 ## License
