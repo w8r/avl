@@ -41,10 +41,10 @@ describe('Keys and values', () => {
 
   it ('should return sorted values', () => {
     const t = new Tree((a, b) => b - a);
-    t.insert(5,   'D');
+    t.insert(8,   'D');
     t.insert(-10, 'A');
-    t.insert(0,   'B');
-    t.insert(33,  'E');
+    t.insert(11,   'B');
+    t.insert(32,  'E');
     t.insert(2,   'C');
 
     assert.deepEqual(t.keys(), [33, 5, 2, 0, -10]);
