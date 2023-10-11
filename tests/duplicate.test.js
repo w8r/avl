@@ -22,7 +22,7 @@ describe('Duplicate keys', () => {
 
   it('should allow multiple duplicate keys in a row', () => {
     const tree = new Tree();
-    const values = [2, 12, 1, 1, -6, 2, 1, 1, 13];
+    const values = [2, 12, 1, 1, -6, 23, 11, 12, 13];
 
     values.forEach((v) => {
       tree.insert(v);
