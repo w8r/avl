@@ -96,7 +96,7 @@ t.insert(2);
 console.log(t.keys()); // [-10, 0, 2, 5, 33]
 console.log(t.size);   // 5
 console.log(t.min());  // -10
-console.log(t.max());  // -33
+console.log(t.max());  // 33
 
 t.remove(0);
 console.log(t.size);   // 4
