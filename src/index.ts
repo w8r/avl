@@ -13,9 +13,6 @@ import type {
 
 /**
  * Default comparison function
- * @param {Key} a
- * @param {Key} b
- * @returns {number}
  */
 function DEFAULT_COMPARE<K>(a: K, b: K): 1 | 0 | -1 {
   return a > b ? 1 : a < b ? -1 : 0;

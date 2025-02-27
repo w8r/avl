@@ -1,14 +1,3 @@
-/**
- * @typedef {{
- *   parent:        ?Node,
- *   left:          ?Node,
- *   right:         ?Node,
- *   balanceFactor: number,
- *   key:           Key,
- *   data:          Value
- * }} Node
- */
-
 export interface AVLNode<K, V> {
   parent: AVLNode<K, V> | null;
   left: AVLNode<K, V> | null;

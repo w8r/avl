@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
 import { resolve } from "path";
 
 import {
@@ -22,14 +21,8 @@ const banner = `\
 `;
 
 export default defineConfig({
-  plugins: [
-    // dts({
-    //   rollupTypes: true,
-    //   tsconfigPath: "./tsconfig.json",
-    // }),
-  ],
   build: {
-    target: "esnext",
+    target: "es6",
     rollupOptions: {
       output: {
         banner,
@@ -42,6 +35,7 @@ export default defineConfig({
       fileName: (format) =>
         `index.${{ es: "mjs", umd: "js", cjs: "cjs" }[format]}`,
     },
+    minify: false,
   },
 
   test: {

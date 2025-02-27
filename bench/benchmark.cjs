@@ -1,7 +1,7 @@
-import Benchmark from "benchmark";
-import { AVLTree as Tree } from "../src";
-import FRB from "functional-red-black-tree";
-import { RBTree } from "bintrees";
+const Benchmark = require("benchmark");
+const { AVLTree: Tree } = require("../dist/index.cjs");
+const FRB = require("functional-red-black-tree");
+const { RBTree } = require("bintrees");
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 require("google-closure-library");
@@ -13,12 +13,15 @@ const values = new Array(N).fill(0).map((_, i) => i);
 
 const prefilledAVL = new Tree();
 rvalues.forEach((v) => prefilledAVL.insert(v));
+
 const prefilledRB = new RBTree((a, b) => a - b);
 rvalues.forEach((v) => prefilledRB.insert(v));
+
 let prefilledFRB = new FRB();
 rvalues.forEach((v) => {
   prefilledFRB = prefilledFRB.insert(v);
 });
+
 const prefilledGCAVL = new goog.structs.AvlTree((a, b) => a - b);
 rvalues.forEach((v) => prefilledGCAVL.add(v));
 
@@ -68,7 +71,7 @@ new Benchmark.Suite(`Random read (x${N})`, options)
       prefilledGCAVL.inOrderTraverse((v) => v === rvalues[i]);
   })
   .add("AVL (current)", () => {
-    for (let i = N - 1; i; i--) prefilledAVL.find(rvalues[i]);
+    for (let i = 0; i < N; i++) prefilledAVL.find(rvalues[i]);
   })
   .run();
 
