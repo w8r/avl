@@ -1,44 +1,31 @@
-import { print, isBalanced, loadRecursive, markBalance, sort } from './utils';
+import { print, isBalanced, loadRecursive, markBalance, sort } from "./utils";
+import type {
+  AVLNode,
+  Comparator,
+  Visitor,
+  NodeCallback,
+  NodePrinter,
+} from "./types";
 
 // function createNode (parent, left, right, height, key, data) {
 //   return { parent, left, right, balanceFactor: height, key, data };
 // }
 
 /**
- * @typedef {{
- *   parent:        ?Node,
- *   left:          ?Node,
- *   right:         ?Node,
- *   balanceFactor: number,
- *   key:           Key,
- *   data:          Value
- * }} Node
- */
-
-/**
- * @typedef {*} Key
- */
-
-/**
- * @typedef {*} Value
- */
-
-/**
  * Default comparison function
- * @param {Key} a
- * @param {Key} b
- * @returns {number}
  */
-function DEFAULT_COMPARE (a, b) { return a > b ? 1 : a < b ? -1 : 0; }
+function DEFAULT_COMPARE<K>(a: K, b: K): 1 | 0 | -1 {
+  return a > b ? 1 : a < b ? -1 : 0;
+}
 
 /**
  * Single left rotation
  * @param  {Node} node
  * @return {Node}
  */
-function rotateLeft (node) {
-  var rightNode = node.right;
-  node.right    = rightNode.left;
+function rotateLeft<K, V>(node: AVLNode<K, V>) {
+  const rightNode = node.right!;
+  node.right = rightNode.left;
 
   if (rightNode.left) rightNode.left.parent = node;
 
@@ -51,7 +38,7 @@ function rotateLeft (node) {
     }
   }
 
-  node.parent    = rightNode;
+  node.parent = rightNode;
   rightNode.left = node;
 
   node.balanceFactor += 1;
@@ -66,8 +53,8 @@ function rotateLeft (node) {
   return rightNode;
 }
 
-function rotateRight (node) {
-  var leftNode = node.left;
+function rotateRight<K, V>(node: AVLNode<K, V>) {
+  const leftNode = node.left!;
   node.left = leftNode.right;
   if (node.left) node.left.parent = node;
 
@@ -80,7 +67,7 @@ function rotateRight (node) {
     }
   }
 
-  node.parent    = leftNode;
+  node.parent = leftNode;
   leftNode.right = node;
 
   node.balanceFactor -= 1;
@@ -106,22 +93,16 @@ function rotateRight (node) {
 //   return rotateLeft(node);
 // }
 
-export default class AVLTree {
-  /**
-   * Callback for comparator
-   * @callback comparatorCallback
-   * @param {Key} a
-   * @param {Key} b
-   * @returns {number}
-   */
+export class AVLTree<K = number, V = unknown> {
+  private _comparator: Comparator<K>;
+  private _root: AVLNode<K, V> | null;
+  private _size: number;
+  private _noDuplicates: boolean;
 
-  /**
-   * @class AVLTree
-   * @constructor
-   * @param  {comparatorCallback} [comparator]
-   * @param  {boolean}            [noDuplicates=false] Disallow duplicates
-   */
-  constructor (comparator, noDuplicates = false) {
+  constructor(
+    comparator: Comparator<K> = DEFAULT_COMPARE,
+    noDuplicates = false
+  ) {
     this._comparator = comparator || DEFAULT_COMPARE;
     this._root = null;
     this._size = 0;
@@ -130,7 +111,6 @@ export default class AVLTree {
 
   /**
    * Clear the tree
-   * @return {AVLTree}
    */
   destroy() {
     return this.clear();
@@ -150,38 +130,36 @@ export default class AVLTree {
    * Number of nodes
    * @return {number}
    */
-  get size () {
+  get size() {
     return this._size;
+  }
+
+  get root() {
+    return this._root;
   }
 
   /**
    * Whether the tree contains a node with the given key
-   * @param  {Key} key
-   * @return {boolean} true/false
    */
-  contains (key) {
-    if (this._root)  {
-      var node       = this._root;
-      var comparator = this._comparator;
-      while (node)  {
-        var cmp = comparator(key, node.key);
-        if      (cmp === 0) return true;
-        else if (cmp < 0)   node = node.left;
-        else                node = node.right;
+  contains(key: K) {
+    if (this._root) {
+      let node: AVLNode<K, V> | null = this._root;
+      const comparator = this._comparator;
+      while (node) {
+        const cmp = comparator(key, node.key);
+        if (cmp === 0) return true;
+        else if (cmp < 0) node = node.left;
+        else node = node.right;
       }
     }
     return false;
   }
 
-  /* eslint-disable class-methods-use-this */
-
   /**
    * Successor node
-   * @param  {Node} node
-   * @return {?Node}
    */
-  next (node) {
-    var successor = node;
+  next(node: AVLNode<K, V>) {
+    let successor: AVLNode<K, V> | null = node;
     if (successor) {
       if (successor.right) {
         successor = successor.right;
@@ -189,7 +167,8 @@ export default class AVLTree {
       } else {
         successor = node.parent;
         while (successor && successor.right === node) {
-          node = successor; successor = successor.parent;
+          node = successor;
+          successor = successor.parent;
         }
       }
     }
@@ -198,11 +177,9 @@ export default class AVLTree {
 
   /**
    * Predecessor node
-   * @param  {Node} node
-   * @return {?Node}
    */
-  prev (node) {
-    var predecessor = node;
+  prev(node: AVLNode<K, V>) {
+    let predecessor: AVLNode<K, V> | null = node;
     if (predecessor) {
       if (predecessor.left) {
         predecessor = predecessor.left;
@@ -217,22 +194,16 @@ export default class AVLTree {
     }
     return predecessor;
   }
-  /* eslint-enable class-methods-use-this */
-
-  /**
-   * Callback for forEach
-   * @callback forEachCallback
-   * @param {Node} node
-   * @param {number} index
-   */
 
   /**
    * @param  {forEachCallback} callback
    * @return {AVLTree}
    */
-  forEach(callback) {
-    var current = this._root;
-    var s = [], done = false, i = 0;
+  forEach(callback: Visitor<K, V>) {
+    let current: AVLNode<K, V> | null | undefined = this._root;
+    const s: AVLNode<K, V>[] = [];
+    let done = false;
+    let i = 0;
 
     while (!done) {
       // Reach the left most Node of the current Node
@@ -246,7 +217,7 @@ export default class AVLTree {
         // at the top of the stack; however, if the stack is
         // empty you are done
         if (s.length > 0) {
-          current = s.pop();
+          current = s.pop()!;
           callback(current, i++);
 
           // We have visited the node and its left
@@ -266,21 +237,20 @@ export default class AVLTree {
    * @param  {*?}       ctx
    * @return {SplayTree}
    */
-  range(low, high, fn, ctx) {
-    const Q = [];
+  range<T>(low: K, high: K, fn: NodeCallback<K, V, T>, ctx?: T) {
+    const Q: AVLNode<K, V>[] = [];
     const compare = this._comparator;
-    let node = this._root, cmp;
+    let node = this._root;
 
     while (Q.length !== 0 || node) {
       if (node) {
         Q.push(node);
         node = node.left;
       } else {
-        node = Q.pop();
-        cmp = compare(node.key, high);
-        if (cmp > 0) {
-          break;
-        } else if (compare(node.key, low) >= 0) {
+        node = Q.pop()!;
+        const cmp = compare(node.key, high);
+        if (cmp > 0) break;
+        else if (compare(node.key, low) >= 0) {
           if (fn.call(ctx, node)) return this; // stop if smth is returned
         }
         node = node.right;
@@ -291,11 +261,12 @@ export default class AVLTree {
 
   /**
    * Returns all keys in order
-   * @return {Array<Key>}
    */
-  keys () {
-    var current = this._root;
-    var s = [], r = [], done = false;
+  keys(): K[] {
+    let current = this._root;
+    const s: AVLNode<K, V>[] = [];
+    const r: K[] = [];
+    let done = false;
 
     while (!done) {
       if (current) {
@@ -303,7 +274,7 @@ export default class AVLTree {
         current = current.left;
       } else {
         if (s.length > 0) {
-          current = s.pop();
+          current = s.pop()!;
           r.push(current.key);
           current = current.right;
         } else done = true;
@@ -314,11 +285,12 @@ export default class AVLTree {
 
   /**
    * Returns `data` fields of all nodes in order.
-   * @return {Array<Value>}
    */
-  values () {
-    var current = this._root;
-    var s = [], r = [], done = false;
+  values(): V[] {
+    let current = this._root;
+    const s: AVLNode<K, V>[] = [];
+    const r: V[] = [];
+    let done = false;
 
     while (!done) {
       if (current) {
@@ -326,8 +298,8 @@ export default class AVLTree {
         current = current.left;
       } else {
         if (s.length > 0) {
-          current = s.pop();
-          r.push(current.data);
+          current = s.pop()!;
+          r.push(current.data!);
           current = current.right;
         } else done = true;
       }
@@ -337,16 +309,16 @@ export default class AVLTree {
 
   /**
    * Returns node at given index
-   * @param  {number} index
-   * @return {?Node}
    */
-  at (index) {
+  at(index: number) {
     // removed after a consideration, more misleading than useful
     // index = index % this.size;
     // if (index < 0) index = this.size - index;
 
-    var current = this._root;
-    var s = [], done = false, i = 0;
+    let current = this._root;
+    const s: AVLNode<K, V>[] = [];
+    let done = false;
+    let i = 0;
 
     while (!done) {
       if (current) {
@@ -354,7 +326,7 @@ export default class AVLTree {
         current = current.left;
       } else {
         if (s.length > 0) {
-          current = s.pop();
+          current = s.pop()!;
           if (i === index) return current;
           i++;
           current = current.right;
@@ -366,10 +338,9 @@ export default class AVLTree {
 
   /**
    * Returns node with the minimum key
-   * @return {?Node}
    */
-  minNode () {
-    var node = this._root;
+  minNode() {
+    let node = this._root;
     if (!node) return null;
     while (node.left) node = node.left;
     return node;
@@ -377,10 +348,9 @@ export default class AVLTree {
 
   /**
    * Returns node with the max key
-   * @return {?Node}
    */
-  maxNode () {
-    var node = this._root;
+  maxNode() {
+    let node = this._root;
     if (!node) return null;
     while (node.right) node = node.right;
     return node;
@@ -388,10 +358,9 @@ export default class AVLTree {
 
   /**
    * Min key
-   * @return {?Key}
    */
-  min () {
-    var node = this._root;
+  min() {
+    let node = this._root;
     if (!node) return null;
     while (node.left) node = node.left;
     return node.key;
@@ -399,10 +368,9 @@ export default class AVLTree {
 
   /**
    * Max key
-   * @return {?Key}
    */
-  max () {
-    var node = this._root;
+  max() {
+    let node = this._root;
     if (!node) return null;
     while (node.right) node = node.right;
     return node.key;
@@ -412,18 +380,18 @@ export default class AVLTree {
    * @return {boolean} true/false
    */
   isEmpty() {
-    return !this._root;
+    return this._root === null;
   }
 
   /**
    * Removes and returns the node with smallest key
-   * @return {?Node}
    */
-  pop () {
-    var node = this._root, returnValue = null;
+  pop() {
+    let node = this._root;
+    let returnValue: AVLNode<K, V> | null = null;
     if (node) {
       while (node.left) node = node.left;
-      returnValue = { key: node.key, data: node.data };
+      returnValue = { key: node.key, data: node.data } as AVLNode<K, V>;
       this.remove(node.key);
     }
     return returnValue;
@@ -431,13 +399,13 @@ export default class AVLTree {
 
   /**
    * Removes and returns the node with highest key
-   * @return {?Node}
    */
-  popMax () {
-    var node = this._root, returnValue = null;
+  popMax() {
+    let node = this._root;
+    let returnValue: AVLNode<K, V> | null = null;
     if (node) {
       while (node.right) node = node.right;
-      returnValue = { key: node.key, data: node.data };
+      returnValue = { key: node.key, data: node.data } as AVLNode<K, V>;
       this.remove(node.key);
     }
     return returnValue;
@@ -445,21 +413,19 @@ export default class AVLTree {
 
   /**
    * Find node by key
-   * @param  {Key} key
-   * @return {?Node}
    */
-  find (key) {
-    var root = this._root;
+  find(key: K) {
+    const root = this._root;
     // if (root === null)    return null;
     // if (key === root.key) return root;
 
-    var subtree = root, cmp;
-    var compare = this._comparator;
+    let subtree = root;
+    const compare = this._comparator;
     while (subtree) {
-      cmp = compare(key, subtree.key);
-      if      (cmp === 0) return subtree;
-      else if (cmp < 0)   subtree = subtree.left;
-      else                subtree = subtree.right;
+      const cmp = compare(key, subtree.key);
+      if (cmp === 0) return subtree;
+      else if (cmp < 0) subtree = subtree.left;
+      else subtree = subtree.right;
     }
 
     return null;
@@ -467,62 +433,65 @@ export default class AVLTree {
 
   /**
    * Insert a node into the tree
-   * @param  {Key} key
-   * @param  {Value} [data]
-   * @return {?Node}
    */
-  insert (key, data) {
+  insert(key: K, data?: V) {
     if (!this._root) {
       this._root = {
-        parent: null, left: null, right: null, balanceFactor: 0,
-        key, data
+        parent: null,
+        left: null,
+        right: null,
+        balanceFactor: 0,
+        key,
+        data,
       };
       this._size++;
       return this._root;
     }
 
-    var compare = this._comparator;
-    var node    = this._root;
-    var parent  = null;
-    var cmp     = 0;
+    const compare = this._comparator;
+    let node: AVLNode<K, V> | null = this._root;
+    let parent: AVLNode<K, V> | null = null;
+    let cmp = 0;
 
     if (this._noDuplicates) {
       while (node) {
         cmp = compare(key, node.key);
         parent = node;
-        if      (cmp === 0) return null;
-        else if (cmp < 0)   node = node.left;
-        else                node = node.right;
+        if (cmp === 0) return null;
+        else if (cmp < 0) node = node.left;
+        else node = node.right;
       }
     } else {
       while (node) {
         cmp = compare(key, node.key);
         parent = node;
-        if      (cmp <= 0)  node = node.left; //return null;
-        else                node = node.right;
+        if (cmp <= 0) node = node.left; //return null;
+        else node = node.right;
       }
     }
 
-    var newNode = {
+    const newNode = {
       left: null,
       right: null,
       balanceFactor: 0,
-      parent, key, data
-    };
-    var newRoot;
-    if (cmp <= 0) parent.left  = newNode;
-    else         parent.right = newNode;
+      parent,
+      key,
+      data,
+    } as AVLNode<K, V>;
+    let newRoot: AVLNode<K, V> | null = null;
+    if (cmp <= 0) parent!.left = newNode;
+    else parent!.right = newNode;
 
     while (parent) {
       cmp = compare(parent.key, key);
       if (cmp < 0) parent.balanceFactor -= 1;
-      else         parent.balanceFactor += 1;
+      else parent.balanceFactor += 1;
 
-      if        (parent.balanceFactor === 0) break;
-      else if   (parent.balanceFactor < -1) {
+      if (parent.balanceFactor === 0) break;
+      else if (parent.balanceFactor < -1) {
         // inlined
         //var newRoot = rightBalance(parent);
-        if (parent.right.balanceFactor === 1) rotateRight(parent.right);
+        if (parent.right!.balanceFactor === 1) rotateRight(parent.right!);
         newRoot = rotateLeft(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -530,7 +499,7 @@ export default class AVLTree {
       } else if (parent.balanceFactor > 1) {
         // inlined
         // var newRoot = leftBalance(parent);
-        if (parent.left.balanceFactor === -1) rotateLeft(parent.left);
+        if (parent.left!.balanceFactor === -1) rotateLeft(parent.left!);
         newRoot = rotateRight(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -545,26 +514,24 @@ export default class AVLTree {
 
   /**
    * Removes the node from the tree. If not found, returns null.
-   * @param  {Key} key
-   * @return {?Node}
    */
-  remove (key) {
+  remove(key: K) {
     if (!this._root) return null;
 
-    var node = this._root;
-    var compare = this._comparator;
-    var cmp = 0;
+    let node: AVLNode<K, V> | null = this._root;
+    const compare = this._comparator;
+    let cmp = 0;
 
     while (node) {
       cmp = compare(key, node.key);
-      if      (cmp === 0) break;
-      else if (cmp < 0)   node = node.left;
-      else                node = node.right;
+      if (cmp === 0) break;
+      else if (cmp < 0) node = node.left;
+      else node = node.right;
     }
     if (!node) return null;
 
-    var returnValue = node.key;
-    var max, min;
+    const returnValue = node.key;
+    let max: AVLNode<K, V>, min: AVLNode<K, V>;
 
     if (node.left) {
       max = node.left;
@@ -580,7 +547,7 @@ export default class AVLTree {
         }
       }
 
-      node.key  = max.key;
+      node.key = max.key;
       node.data = max.data;
       node = max;
     }
@@ -591,7 +558,7 @@ export default class AVLTree {
       while (min.left || min.right) {
         while (min.left) min = min.left;
 
-        node.key  = min.key;
+        node.key = min.key;
         node.data = min.data;
         if (min.right) {
           node = min;
@@ -599,23 +566,23 @@ export default class AVLTree {
         }
       }
 
-      node.key  = min.key;
+      node.key = min.key;
       node.data = min.data;
       node = min;
     }
 
-    var parent = node.parent;
-    var pp     = node;
-    var newRoot;
+    let parent = node.parent;
+    let pp = node;
+    let newRoot: AVLNode<K, V>;
 
     while (parent) {
       if (parent.left === pp) parent.balanceFactor -= 1;
-      else                    parent.balanceFactor += 1;
+      else parent.balanceFactor += 1;
 
-      if        (parent.balanceFactor < -1) {
+      if (parent.balanceFactor < -1) {
         // inlined
         //var newRoot = rightBalance(parent);
-        if (parent.right.balanceFactor === 1) rotateRight(parent.right);
+        if (parent.right!.balanceFactor === 1) rotateRight(parent.right!);
         newRoot = rotateLeft(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -623,7 +590,7 @@ export default class AVLTree {
       } else if (parent.balanceFactor > 1) {
         // inlined
         // var newRoot = leftBalance(parent);
-        if (parent.left.balanceFactor === -1) rotateLeft(parent.left);
+        if (parent.left!.balanceFactor === -1) rotateLeft(parent.left!);
         newRoot = rotateRight(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -632,13 +599,13 @@ export default class AVLTree {
 
       if (parent.balanceFactor === -1 || parent.balanceFactor === 1) break;
 
-      pp     = parent;
+      pp = parent;
       parent = parent.parent;
     }
 
     if (node.parent) {
-      if (node.parent.left === node) node.parent.left  = null;
-      else                           node.parent.right = null;
+      if (node.parent.left === node) node.parent.left = null;
+      else node.parent.right = null;
     }
 
     if (node === this._root) this._root = null;
@@ -649,12 +616,9 @@ export default class AVLTree {
 
   /**
    * Bulk-load items
-   * @param  {Array<Key>}  keys
-   * @param  {Array<Value>}  [values]
-   * @return {AVLTree}
    */
-  load(keys = [], values = [], presort) {
-    if (this._size !== 0) throw new Error('bulk-load: tree is not empty');
+  load(keys: K[] = [], values: V[] = [], presort?: boolean) {
+    if (this._size !== 0) throw new Error("bulk-load: tree is not empty");
     const size = keys.length;
     if (presort) sort(keys, values, 0, size - 1, this._comparator);
     this._root = loadRecursive(null, keys, values, 0, size);
@@ -665,7 +629,6 @@ export default class AVLTree {
 
   /**
    * Returns true if the tree is balanced
-   * @return {boolean}
    */
   isBalanced() {
     return isBalanced(this._root);
@@ -673,12 +636,10 @@ export default class AVLTree {
 
   /**
    * String representation of the tree - primitive horizontal print-out
-   * @param  {Function(Node):string} [printNode]
-   * @return {string}
    */
-  toString (printNode) {
+  toString(printNode?: NodePrinter<K, V>) {
     return print(this._root, printNode);
   }
 }
 
-AVLTree.default = AVLTree;
+export { AVLTree as Tree };

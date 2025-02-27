@@ -1,11 +1,8 @@
-import { describe, it } from 'mocha';
-import { assert }       from 'chai';
+import { describe, it, assert } from "vitest";
+import { Tree } from "../src/";
 
-import Tree from '../src/index';
-
-describe('balance', () => {
-
-  it('should be balance after in order insert', () => {
+describe("balance", () => {
+  it("should be balance after in order insert", () => {
     const tree = new Tree();
     tree.insert(1);
     tree.insert(3);
@@ -20,9 +17,10 @@ describe('balance', () => {
     assert.isTrue(tree.isBalanced());
   });
 
-  it('should be balance after random insert', () => {
+  it("should be balance after random insert", () => {
     const tree = new Tree();
-    const min = -100, max = 100;
+    const min = -100,
+      max = 100;
 
     for (let i = 0; i < 20; i++) {
       tree.insert(min + Math.floor((max - min) * Math.random()));
@@ -33,5 +31,4 @@ describe('balance', () => {
     // console.log(Tree.verifyBalanceFactor(tree._root));
     assert.isTrue(tree.isBalanced());
   });
-
 });

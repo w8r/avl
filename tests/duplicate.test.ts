@@ -1,11 +1,8 @@
-import { describe, it } from 'mocha';
-import { assert }       from 'chai';
+import { describe, it, assert } from "vitest";
+import { Tree } from "../src/";
 
-import Tree from '../src/index';
-
-describe('Duplicate keys', () => {
-
-  it('should allow inserting of duplicate key', () => {
+describe("Duplicate keys", () => {
+  it("should allow inserting of duplicate key", () => {
     const tree = new Tree();
     const values = [2, 12, 1, -6, 1];
 
@@ -19,8 +16,7 @@ describe('Duplicate keys', () => {
     assert.isTrue(tree.isBalanced());
   });
 
-
-  it('should allow multiple duplicate keys in a row', () => {
+  it("should allow multiple duplicate keys in a row", () => {
     const tree = new Tree();
     const values = [2, 12, 1, 1, -6, 2, 1, 1, 13];
 
@@ -29,13 +25,12 @@ describe('Duplicate keys', () => {
       assert.isTrue(tree.isBalanced());
     });
 
-
-    assert.deepEqual(tree.keys(), [ -6, 1, 1, 1, 1, 2, 2, 12, 13 ]);
+    assert.deepEqual(tree.keys(), [-6, 1, 1, 1, 1, 2, 2, 12, 13]);
     assert.equal(tree.size, 9);
     assert.isTrue(tree.isBalanced());
   });
 
-  it ('should remove from a tree with duplicate keys correctly', () => {
+  it("should remove from a tree with duplicate keys correctly", () => {
     const tree = new Tree();
     const values = [2, 12, 1, 1, -6, 1, 1];
 
@@ -54,7 +49,7 @@ describe('Duplicate keys', () => {
     assert.isTrue(tree.isBalanced());
   });
 
-  it ('should remove from a tree with multiple duplicate keys correctly', () => {
+  it("should remove from a tree with multiple duplicate keys correctly", () => {
     const tree = new Tree();
     const values = [2, 12, 1, 1, -6, 1, 1, 2, 0, 2];
 
@@ -69,7 +64,7 @@ describe('Duplicate keys', () => {
     }
   });
 
-  it ('should disallow duplicates if noDuplicates is set', () => {
+  it("should disallow duplicates if noDuplicates is set", () => {
     const tree = new Tree(undefined, true);
     const values = [2, 12, 1, -6, 1];
 
@@ -82,5 +77,4 @@ describe('Duplicate keys', () => {
     assert.equal(tree.size, 4);
     assert.isTrue(tree.isBalanced());
   });
-
 });
