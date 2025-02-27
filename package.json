@@ -1,6 +1,6 @@
 {
   "name": "avl",
-  "version": "1.5.3",
+  "version": "1.6.0",
   "author": "Alexander Milevski <alex@milevski.co>",
   "license": "MIT",
   "description": "Fast AVL tree for Node and browser",
@@ -32,8 +32,7 @@
     "benchmark": "node bench/benchmark.mjs",
     "start": "npm run test:watch",
     "test:watch": "vitest",
-    "test": "vitest run",
-    "prepublish": "npm run build && npm test"
+    "test": "vitest run"
   },
   "devDependencies": {
     "@types/bintrees": "^1.0.6",
