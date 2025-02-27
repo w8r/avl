@@ -1,11 +1,8 @@
-import { describe, it } from 'mocha';
-import { assert }       from 'chai';
+import { describe, it, assert } from "vitest";
+import { Tree } from "../src/";
 
-import Tree from '../src/index';
-
-describe ('empty check', () => {
-
-  it('should return whether the tree is empty', () => {
+describe("empty check", () => {
+  it("should return whether the tree is empty", () => {
     const tree = new Tree();
 
     assert.isTrue(tree.isEmpty());
@@ -15,7 +12,7 @@ describe ('empty check', () => {
     assert.isTrue(tree.isEmpty());
   });
 
-  it ('should clear the tree', () => {
+  it("should clear the tree", () => {
     const tree = new Tree();
     tree.insert(1);
     tree.insert(2);

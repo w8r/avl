@@ -1,36 +1,15 @@
 import { print, isBalanced, loadRecursive, markBalance, sort } from "./utils";
+import type {
+  AVLNode,
+  Comparator,
+  Visitor,
+  NodeCallback,
+  NodePrinter,
+} from "./types";
 
 // function createNode (parent, left, right, height, key, data) {
 //   return { parent, left, right, balanceFactor: height, key, data };
 // }
-
-/**
- * @typedef {{
- *   parent:        ?Node,
- *   left:          ?Node,
- *   right:         ?Node,
- *   balanceFactor: number,
- *   key:           Key,
- *   data:          Value
- * }} Node
- */
-
-interface AVLNode<K, V> {
-  parent: AVLNode<K, V> | null;
-  left: AVLNode<K, V> | null;
-  right: AVLNode<K, V> | null;
-  balanceFactor: number;
-  key: K;
-  data: V;
-}
-
-/**
- * @typedef {*} Key
- */
-
-/**
- * @typedef {*} Value
- */
 
 /**
  * Default comparison function
@@ -47,8 +26,8 @@ function DEFAULT_COMPARE<K>(a: K, b: K): 1 | 0 | -1 {
  * @param  {Node} node
  * @return {Node}
  */
-function rotateLeft(node) {
-  var rightNode = node.right;
+function rotateLeft<K, V>(node: AVLNode<K, V>) {
+  const rightNode = node.right!;
   node.right = rightNode.left;
 
   if (rightNode.left) rightNode.left.parent = node;
@@ -77,8 +56,8 @@ function rotateLeft(node) {
   return rightNode;
 }
 
-function rotateRight(node) {
-  var leftNode = node.left;
+function rotateRight<K, V>(node: AVLNode<K, V>) {
+  const leftNode = node.left!;
   node.left = leftNode.right;
   if (node.left) node.left.parent = node;
 
@@ -117,16 +96,7 @@ function rotateRight(node) {
 //   return rotateLeft(node);
 // }
 
-/** Callback for comparator */
-export type Comparator<K> = (a: K, b: K) => 1 | 0 | -1;
-export type Visitor<K, V> = (node: AVLNode<K, V>, i: number) => void;
-export type NodeCallback<K, V, T = any> = (
-  this: T,
-  node: AVLNode<K, V>
-) => void | boolean;
-export type NodePrinter<K, V> = (node: AVLNode<K, V>) => string;
-
-export class AVLTree<K, V> {
+export class AVLTree<K = number, V = unknown> {
   private _comparator: Comparator<K>;
   private _root: AVLNode<K, V> | null;
   private _size: number;
@@ -167,6 +137,10 @@ export class AVLTree<K, V> {
     return this._size;
   }
 
+  get root() {
+    return this._root;
+  }
+
   /**
    * Whether the tree contains a node with the given key
    */
@@ -183,8 +157,6 @@ export class AVLTree<K, V> {
     }
     return false;
   }
-
-  /* eslint-disable class-methods-use-this */
 
   /**
    * Successor node
@@ -330,7 +302,7 @@ export class AVLTree<K, V> {
       } else {
         if (s.length > 0) {
           current = s.pop()!;
-          r.push(current.data);
+          r.push(current.data!);
           current = current.right;
         } else done = true;
       }
@@ -445,7 +417,7 @@ export class AVLTree<K, V> {
   /**
    * Find node by key
    */
-  find(key) {
+  find(key: K) {
     const root = this._root;
     // if (root === null)    return null;
     // if (key === root.key) return root;
@@ -465,7 +437,7 @@ export class AVLTree<K, V> {
   /**
    * Insert a node into the tree
    */
-  insert(key: K, data: V) {
+  insert(key: K, data?: V) {
     if (!this._root) {
       this._root = {
         parent: null,
@@ -522,7 +494,7 @@ export class AVLTree<K, V> {
       else if (parent.balanceFactor < -1) {
         // inlined
         //var newRoot = rightBalance(parent);
-        if (parent.right!.balanceFactor === 1) rotateRight(parent.right);
+        if (parent.right!.balanceFactor === 1) rotateRight(parent.right!);
         newRoot = rotateLeft(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -530,7 +502,7 @@ export class AVLTree<K, V> {
       } else if (parent.balanceFactor > 1) {
         // inlined
         // var newRoot = leftBalance(parent);
-        if (parent.left!.balanceFactor === -1) rotateLeft(parent.left);
+        if (parent.left!.balanceFactor === -1) rotateLeft(parent.left!);
         newRoot = rotateRight(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -545,8 +517,6 @@ export class AVLTree<K, V> {
 
   /**
    * Removes the node from the tree. If not found, returns null.
-   * @param  {Key} key
-   * @return {?Node}
    */
   remove(key: K) {
     if (!this._root) return null;
@@ -615,7 +585,7 @@ export class AVLTree<K, V> {
       if (parent.balanceFactor < -1) {
         // inlined
         //var newRoot = rightBalance(parent);
-        if (parent.right!.balanceFactor === 1) rotateRight(parent.right);
+        if (parent.right!.balanceFactor === 1) rotateRight(parent.right!);
         newRoot = rotateLeft(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -623,7 +593,7 @@ export class AVLTree<K, V> {
       } else if (parent.balanceFactor > 1) {
         // inlined
         // var newRoot = leftBalance(parent);
-        if (parent.left!.balanceFactor === -1) rotateLeft(parent.left);
+        if (parent.left!.balanceFactor === -1) rotateLeft(parent.left!);
         newRoot = rotateRight(parent);
 
         if (parent === this._root) this._root = newRoot;
@@ -649,11 +619,8 @@ export class AVLTree<K, V> {
 
   /**
    * Bulk-load items
-   * @param  {Array<Key>}  keys
-   * @param  {Array<Value>}  [values]
-   * @return {AVLTree}
    */
-  load(keys = [], values = [], presort) {
+  load(keys: K[] = [], values: V[] = [], presort?: boolean) {
     if (this._size !== 0) throw new Error("bulk-load: tree is not empty");
     const size = keys.length;
     if (presort) sort(keys, values, 0, size - 1, this._comparator);
@@ -665,7 +632,6 @@ export class AVLTree<K, V> {
 
   /**
    * Returns true if the tree is balanced
-   * @return {boolean}
    */
   isBalanced() {
     return isBalanced(this._root);
@@ -673,10 +639,10 @@ export class AVLTree<K, V> {
 
   /**
    * String representation of the tree - primitive horizontal print-out
-   * @param  {Function(Node):string} [printNode]
-   * @return {string}
    */
-  toString(printNode) {
+  toString(printNode?: NodePrinter<K, V>) {
     return print(this._root, printNode);
   }
 }
+
+export { AVLTree as Tree };

@@ -1,11 +1,8 @@
-import { describe, it } from 'mocha';
-import { assert }       from 'chai';
+import { describe, it, assert } from "vitest";
+import { AVLTree as Tree } from "../src/";
 
-import Tree from '../src/index';
-
-describe('Keys and values', () => {
-
-  it ('should return sorted keys', () => {
+describe("Keys and values", () => {
+  it("should return sorted keys", () => {
     const t = new Tree((a, b) => b - a);
     t.insert(5);
     t.insert(-10);
@@ -16,7 +13,7 @@ describe('Keys and values', () => {
     assert.deepEqual(t.keys(), [33, 5, 2, 0, -10]);
   });
 
-  it ('should return sorted keys', () => {
+  it("should return sorted keys", () => {
     const t = new Tree();
     t.insert(5);
     t.insert(-10);
@@ -27,36 +24,35 @@ describe('Keys and values', () => {
     assert.deepEqual(t.keys(), [-10, 0, 2, 5, 33]);
   });
 
-  it ('should return sorted values', () => {
+  it("should return sorted values", () => {
     const t = new Tree();
-    t.insert(5,   'D');
-    t.insert(-10, 'A');
-    t.insert(0,   'B');
-    t.insert(33,  'E');
-    t.insert(2,   'C');
+    t.insert(5, "D");
+    t.insert(-10, "A");
+    t.insert(0, "B");
+    t.insert(33, "E");
+    t.insert(2, "C");
 
     assert.deepEqual(t.keys(), [-10, 0, 2, 5, 33]);
-    assert.deepEqual(t.values(), ['A', 'B', 'C', 'D', 'E']);
+    assert.deepEqual(t.values(), ["A", "B", "C", "D", "E"]);
   });
 
-  it ('should return sorted values', () => {
+  it("should return sorted values", () => {
     const t = new Tree((a, b) => b - a);
-    t.insert(5,   'D');
-    t.insert(-10, 'A');
-    t.insert(0,   'B');
-    t.insert(33,  'E');
-    t.insert(2,   'C');
+    t.insert(5, "D");
+    t.insert(-10, "A");
+    t.insert(0, "B");
+    t.insert(33, "E");
+    t.insert(2, "C");
 
     assert.deepEqual(t.keys(), [33, 5, 2, 0, -10]);
-    assert.deepEqual(t.values(), ['E', 'D', 'C', 'B', 'A']);
+    assert.deepEqual(t.values(), ["E", "D", "C", "B", "A"]);
   });
 
-  it ('should return sorted values after bulk insert', () => {
+  it("should return sorted values after bulk insert", () => {
     const t = new Tree();
-    t.load([5, -10, 0, 33, 2], ['D', 'A', 'B', 'E', 'C'], true);
+    t.load([5, -10, 0, 33, 2], ["D", "A", "B", "E", "C"], true);
 
     assert.deepEqual(t.keys(), [-10, 0, 2, 5, 33]);
-    assert.deepEqual(t.values(), ['A', 'B', 'C', 'D', 'E']);
+    assert.deepEqual(t.values(), ["A", "B", "C", "D", "E"]);
   });
-
 });
