@@ -1,5 +1,4 @@
-import type { AVLNode, NodePrinter } from "./types";
-import { Comparator } from "bintrees";
+import type { AVLNode, Comparator, NodePrinter } from "./types";
 
 /**
  * Prints tree horizontally
