@@ -432,6 +432,46 @@ export class AVLTree<K = number, V = unknown> {
   }
 
   /**
+   * Returns the node that has the minimum key strictly above the given key, else null
+   */
+  above(key: K) {
+    const compare = this._comparator;
+    let node = this.root;
+    let candidate: AVLNode<K, V> | null = null;
+
+    while (node) {
+      if (compare(node.key, key) > 0) {
+        candidate = node;
+        node = node.left;
+      } else {
+        node = node.right;
+      }
+    }
+
+    return candidate;
+  }
+
+  /**
+   * Returns the node that has the maximum key strictly below the given key, else null
+   */
+  below(key: K) {
+    const compare = this._comparator;
+    let node = this.root;
+    let candidate: AVLNode<K, V> | null = null;
+
+    while (node) {
+      if (compare(node.key, key) < 0) {
+        candidate = node;
+        node = node.right;
+      } else {
+        node = node.left;
+      }
+    }
+
+    return candidate;
+  }
+
+  /**
    * Insert a node into the tree
    */
   insert(key: K, data?: V) {

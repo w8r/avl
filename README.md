@@ -41,6 +41,8 @@ Or use the compiled version 'dist/avl.js'.
 * `tree.insert(key:any, [data:any])` - Insert item
 * `tree.remove(key:any)` - Remove item
 * `tree.find(key):Node|Null` - Return node by its key
+* `tree.above(key):Node|Null` - Returns the node that has the minimum key strictly above the given key, else null
+* `tree.below(key):Node|Null` - Returns the node that has the maximum key strictly below the given key, else null
 * `tree.at(index:Number):Node|Null` - Return node by its index in sorted order of keys
 * `tree.contains(key):Boolean` - Whether a node with the given key is in the tree
 * `tree.forEach(function(node) {...}):Tree` In-order traversal
@@ -75,7 +77,7 @@ Or use the compiled version 'dist/avl.js'.
 
  By default, tree allows duplicate keys. You can disable that by passing `true`
  as a second parameter to the tree constructor. In that case if you would try to
- instert an item with the key, that is already present in the tree, it will not
+ insert an item with the key, that is already present in the tree, it will not
  be inserted.
  However, the default behavior allows for duplicate keys, cause there are cases
  where you cannot predict that the keys would be unique (example: overlapping
